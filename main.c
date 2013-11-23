@@ -27,10 +27,8 @@ int main()
 	element * lista=NULL;
 
 	lista=dodaj(lista);
-	wyswietl(lista);
+	//wyswietl(lista);
 	lista=usun(lista);
-
-	wyswietl(lista);
 	system("pause");
 	return 0;
 }
@@ -51,7 +49,7 @@ void wyswietl(element * first)
 	element *temp=first;
 	if(first==NULL)
 	{
-		printf("Brak elementów na liœcie\n");
+		printf("Brak elementow na liscie\n");
 		return;
 	}
 	do
@@ -92,6 +90,7 @@ element * pozycja(element *first, int pos)
 element * dodaj(element *first,plik obraz)
 {
 	element *temp;
+	char znak=NULL;
 	temp=(element *)malloc(sizeof(element));
 	printf("podaj nazwe pliku:");
 	scanf("%s",temp->nazwa);
@@ -99,7 +98,36 @@ element * dodaj(element *first,plik obraz)
 	obraz=fopen(temp->nazwa,"r");
 	if(obraz!=NULL)
 	{
-
+	
+		while(fgetc(obraz)!=EOF)
+			{
+				fseek(obraz,-1,SEEK_CUR);
+				if(znak=='P')
+				{
+				znak=fgetc(obraz);
+				if(znak=='1') temp->tryb=1;
+				else if (znak=='2') temp->tryb=2;
+				else if (znak=='3') temp->tryb=2;
+				}
+				else if(znak=='#')
+				{
+					fseek(obraz,-1,SEEK_CUR);
+					while(znak!='\n') 
+					{
+						znak=fgetc(obraz);
+						printf("%c",znak);
+					}
+				}
+				else
+				{
+					temp->rozmiarx=znak;
+					fseek(obraz,-1,SEEK_CUR);
+					znak=fgetc(obraz);
+					temp->rozmiary=znak;
+				}
+			}
+	
+			printf("P%d\nrozmiarx: %d\nrozmiary: %d\n",temp->tryb,temp->rozmiarx,temp->rozmiary);
 	fclose(obraz);
 	}
 	else
