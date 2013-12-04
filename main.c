@@ -90,20 +90,25 @@ element * pozycja(element *first, int pos)
 element * dodaj(element *first,plik obraz)
 {
 	element *temp;
-	char znak=NULL;
+	char znak;
 	temp=(element *)malloc(sizeof(element));
 	printf("podaj nazwe pliku:");
 	scanf("%s",temp->nazwa);
+
 	temp->next=NULL;
 
 	obraz=fopen(temp->nazwa,"r");
 	if(obraz!=NULL)
 	{
+		
 		znak=fgetc(obraz);
+		fseek(obraz,-1,SEEK_CUR);
+		
 		while(znak!=EOF)
+		{
+			znak=fgetc(obraz);
+			if(znak!='\n');
 			{
-				fseek(obraz,-1,SEEK_CUR);
-				znak=fgetc(obraz);
 				if(znak=='P')
 				{
 				znak=fgetc(obraz);
@@ -120,16 +125,18 @@ element * dodaj(element *first,plik obraz)
 						printf("%c",znak);
 					}
 				} 
-				else if(znak!='\0');
+				fscanf(obraz,"%d%d",&temp->rozmiarx,&temp->rozmiary);
+				/*else if(znak=='\n');
 				{
 					//temp->rozmiarx=znak;
-					znak=fgetc(obraz);
+					//znak=fgetc(obraz);
 					//temp->rozmiary=znak;
-					printf("innyczytany\n");
-				}
+					printf("enter\n");
+
+				}*/
 			}
-	
-			printf("P%d\nrozmiarx: %d\nrozmiary: %d\n",temp->tryb,temp->rozmiarx,temp->rozmiary);
+		}
+		printf("P%d\nrozmiarx: %d\nrozmiary: %d\n",temp->tryb,temp->rozmiarx,temp->rozmiary);
 	fclose(obraz);
 	}
 	else
