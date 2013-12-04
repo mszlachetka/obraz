@@ -95,13 +95,15 @@ element * dodaj(element *first,plik obraz)
 	printf("podaj nazwe pliku:");
 	scanf("%s",temp->nazwa);
 	temp->next=NULL;
+
 	obraz=fopen(temp->nazwa,"r");
 	if(obraz!=NULL)
 	{
-	
-		while(fgetc(obraz)!=EOF)
+		znak=fgetc(obraz);
+		while(znak!=EOF)
 			{
 				fseek(obraz,-1,SEEK_CUR);
+				znak=fgetc(obraz);
 				if(znak=='P')
 				{
 				znak=fgetc(obraz);
@@ -117,13 +119,13 @@ element * dodaj(element *first,plik obraz)
 						znak=fgetc(obraz);
 						printf("%c",znak);
 					}
-				}
-				else
+				} 
+				else if(znak!='\0');
 				{
-					temp->rozmiarx=znak;
-					fseek(obraz,-1,SEEK_CUR);
+					//temp->rozmiarx=znak;
 					znak=fgetc(obraz);
-					temp->rozmiary=znak;
+					//temp->rozmiary=znak;
+					printf("innyczytany\n");
 				}
 			}
 	
@@ -138,4 +140,3 @@ element * dodaj(element *first,plik obraz)
 	
 	return push(first,temp);
 }
-
