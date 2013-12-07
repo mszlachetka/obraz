@@ -13,21 +13,26 @@ typedef struct element
 	int rozmiarx;
 	int rozmiary;
 	int odcien;
+	int **tab;
 } element;
 
 element * push(element * first, element * newone);
 void wyswietl(element * first);
 element * usun(element * first);
 element * pozycja(element *first, int pos);
-element * dodaj(element *first);
+element * dodaj(element *first, plik obraz);
 
 
 int main()
 {
 	element * lista=NULL;
+	plik obraz=NULL;
 
-	lista=dodaj(lista);
-	//wyswietl(lista);
+	lista=dodaj(lista,obraz);
+	lista=dodaj(lista,obraz);
+
+	
+	wyswietl(lista);
 	lista=usun(lista);
 	system("pause");
 	return 0;
@@ -90,6 +95,9 @@ element * pozycja(element *first, int pos)
 element * dodaj(element *first,plik obraz)
 {
 	element *temp;
+	int i=0;
+	int j=0;
+
 	char znak;
 	temp=(element *)malloc(sizeof(element));
 	printf("podaj nazwe pliku:");
@@ -103,18 +111,15 @@ element * dodaj(element *first,plik obraz)
 		
 		znak=fgetc(obraz);
 		fseek(obraz,-1,SEEK_CUR);
-		
 		while(znak!=EOF)
 		{
 			znak=fgetc(obraz);
-			if(znak!='\n');
-			{
+			
 				if(znak=='P')
 				{
 				znak=fgetc(obraz);
 				if(znak=='1') temp->tryb=1;
 				else if (znak=='2') temp->tryb=2;
-				else if (znak=='3') temp->tryb=2;
 				}
 				else if(znak=='#')
 				{
@@ -125,18 +130,43 @@ element * dodaj(element *first,plik obraz)
 						printf("%c",znak);
 					}
 				} 
-				fscanf(obraz,"%d%d",&temp->rozmiarx,&temp->rozmiary);
-				/*else if(znak=='\n');
-				{
-					//temp->rozmiarx=znak;
-					//znak=fgetc(obraz);
-					//temp->rozmiary=znak;
-					printf("enter\n");
 
-				}*/
-			}
-		}
-		printf("P%d\nrozmiarx: %d\nrozmiary: %d\n",temp->tryb,temp->rozmiarx,temp->rozmiary);
+				
+				fscanf(obraz,"%d%d",&temp->rozmiarx,&temp->rozmiary);
+			
+				
+				 temp->tab=(int**)malloc(temp->rozmiary*sizeof(int*));
+				 for(i=0;i<temp->rozmiary;i++)
+					temp->tab[i] = (int*)malloc(temp->rozmiarx*sizeof(int));
+
+				
+				  for(i=0;i<temp->rozmiary;i++)
+				  {
+					for(j=0;j<temp->rozmiarx;j++)
+					{
+						fscanf(obraz,"%d",&temp->tab[i][j]);
+						znak=fgetc(obraz);
+
+					}
+				
+				
+				  }
+				 
+				
+				}
+			
+	
+		printf("\nP%d\nrozmiary: %d\nrozmiarx: %d\n\n",temp->tryb,temp->rozmiary,temp->rozmiarx);
+		  for(i=0;i<temp->rozmiary;i++)
+				  {
+					for(j=0;j<temp->rozmiarx;j++)
+					{
+						printf("%d ",temp->tab[i][j]);
+					}
+						printf("\n");
+				
+				  }
+
 	fclose(obraz);
 	}
 	else
@@ -147,3 +177,4 @@ element * dodaj(element *first,plik obraz)
 	
 	return push(first,temp);
 }
+
