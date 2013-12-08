@@ -20,6 +20,7 @@ void wyswietl(element * first);
 element * usun(element * first);
 element * pozycja(element *first, int pos);
 element * dodaj(element *first, plik obraz);
+void zapisz(element *first,plik obraz);
 
 void menuglowne(element *first,plik obraz);
 void komendymenuglownego();
@@ -71,8 +72,7 @@ void menuglowne(element *lista, plik obraz)
 			obrot(lista);
 			break;
 		case '5':
-			
-			  
+			zapisz(lista,obraz);
 			break;
 		case '6':
 			lista=usun(lista);
@@ -515,6 +515,63 @@ void inittab(element *temp)
           for(i=0;i<temp->rozmiary;i++)
               temp->tab[i] = (int*)malloc(temp->rozmiarx*sizeof(int));
 }
+
+void zapisz(element *first,plik obraz)
+{
+	int i=0,j=0;
+	int znak;
+	printf("\n1-nadpisac obecny plik?\n2-zapisac jako odrebny?\n");
+	getchar();
+	znak=getchar();
+	if(znak=='1')
+	{
+	 obraz=fopen(first->nazwa,"w");
+	 fprintf(obraz,"P%d\n",first->tryb);
+	 fprintf(obraz,"%d %d\n",first->rozmiarx,first->rozmiary);
+	 if(first->tryb==2) fprintf(obraz,"%d\n",first->odcien);
+
+	 for(i=0;i<first->rozmiary;i++)
+           {
+           for(j=0;j<first->rozmiarx;j++)
+           {
+             fprintf(obraz,"%d ",first->tab[i][j]);
+           }
+             if(i!=first->rozmiary-1) fprintf(obraz,"\n");
+          }
+		fclose(obraz);
+	}
+	else if(znak=='2')
+	{
+		char nazwa[50];
+		printf("podaj nazwe pliku:");
+		scanf("%s",nazwa);
+	obraz=fopen(nazwa,"w");
+	 fprintf(obraz,"P%d\n",first->tryb);
+	 fprintf(obraz,"%d %d\n",first->rozmiarx,first->rozmiary);
+	 fprintf(obraz,"%d\n",first->odcien);
+
+	 for(i=0;i<first->rozmiary;i++)
+           {
+           for(j=0;j<first->rozmiarx;j++)
+           {
+             fprintf(obraz,"%d ",first->tab[i][j]);
+           }
+             if(i!=first->rozmiary-1) fprintf(obraz,"\n");
+          }
+		fclose(obraz);
+
+	}
+	else
+	{
+		printf("niepoprawna komenda, sproboj ponownie\n");
+		zapisz(first,obraz);
+
+	}
+	
+}
+
+
 #endif // HEADER2_H
+
 
 
