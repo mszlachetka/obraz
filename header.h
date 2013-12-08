@@ -284,25 +284,16 @@ void wykryjkrawedz(element *first)
 	}
 	else
 	{
-	int i=0,j=0,k=0,m=0,counter=0,ile=0;
+	int i=0,j=0,k=0,m=0,counter=0;
 	element *temp;
 	 temp=(element *)malloc(sizeof(element));
 		 temp->tab=(int**)malloc(first->rozmiary*sizeof(int*));
 			for(i=0;i<first->rozmiary;i++)
               temp->tab[i] = (int*)malloc(first->rozmiarx*sizeof(int));
 
-////wydrukuj to co na poczatku
-	for(i=0;i<first->rozmiary;i++)
-           {
-           for(j=0;j<first->rozmiarx;j++)
-           {
-             printf("%d ",first->tab[i][j]);
-           }
-             printf("\n");
-         
-          }
-	 printf("\n");
-////
+
+
+
 //////wydrukuj ile pol jest zapelnionych <na 3x3 od danego pola>
 	for(i=0;i<first->rozmiary;i++)
       {
@@ -320,27 +311,27 @@ void wykryjkrawedz(element *first)
 				}
 				
 			 }
-			ile++;
+			
 			if(counter==9) 
 			{
 				temp->tab[i][j]=1;	
 			}
-			printf("%d ",counter);
+			//printf("%d ",counter);
 			counter=0;
 		   }
-			printf("\n");
+			//printf("\n");
 	}
 //////////
-	printf("ile:%d\n",ile);
+
 			
 		for(i=0;i<first->rozmiary;i++)
            {
            for(j=0;j<first->rozmiarx;j++)
            {
 			   if(temp->tab[i][j]==1) first->tab[i][j]=0;
-             printf("%d ",first->tab[i][j]);
+            // printf("%d ",first->tab[i][j]);
            }
-             printf("\n");
+            // printf("\n");
          
           }
   
@@ -365,9 +356,9 @@ void negatyw(element *first)
            for(j=0;j<first->rozmiarx;j++)
            {
 			   first->tab[i][j]=first->odcien-first->tab[i][j];
-             printf("%d ",first->tab[i][j]);
+            // printf("%d ",first->tab[i][j]);
            }
-             printf("\n");
+             //printf("\n");
          
           }
 	}
@@ -463,7 +454,7 @@ void obrot180(element *first)
            {
            for(j=0;j<temp->rozmiarx;j++)
            {
-             printf("%d ",temp->tab[i][j]);
+             first->tab[i][j]=temp->tab[i][j];
            }
              printf("\n");
      
@@ -534,7 +525,8 @@ void zapisz(element *first,plik obraz)
            {
            for(j=0;j<first->rozmiarx;j++)
            {
-             fprintf(obraz,"%d ",first->tab[i][j]);
+             if(j!=first->rozmiarx-1) fprintf(obraz,"%d ",first->tab[i][j]);
+			 else fprintf(obraz,"%d",first->tab[i][j]);
            }
              if(i!=first->rozmiary-1) fprintf(obraz,"\n");
           }
@@ -548,13 +540,14 @@ void zapisz(element *first,plik obraz)
 	obraz=fopen(nazwa,"w");
 	 fprintf(obraz,"P%d\n",first->tryb);
 	 fprintf(obraz,"%d %d\n",first->rozmiarx,first->rozmiary);
-	 fprintf(obraz,"%d\n",first->odcien);
+	 if(first->tryb==2) fprintf(obraz,"%d\n",first->odcien);
 
 	 for(i=0;i<first->rozmiary;i++)
            {
            for(j=0;j<first->rozmiarx;j++)
            {
-             fprintf(obraz,"%d ",first->tab[i][j]);
+             if(j!=first->rozmiarx-1) fprintf(obraz,"%d ",first->tab[i][j]);
+			 else fprintf(obraz,"%d",first->tab[i][j]);
            }
              if(i!=first->rozmiary-1) fprintf(obraz,"\n");
           }
