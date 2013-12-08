@@ -288,7 +288,7 @@ void wykryjkrawedz(element *first)
       {
           for(j=0;j<first->rozmiarx;j++)
           {
-			if(first->tab[i][j]!=0 && j>0 && i>0)// zewnetrznych nie bede zmienial bo nie wiem jakby co jest poza , krawedz pola nie musi byc krawedzia kszataltu
+			if(first->tab[i][j]!=0 && j>0 && i>0 && i<first->rozmiary-1 && j<first->rozmiarx-1)// zewnetrznych nie bede zmienial bo nie wiem jakby co jest poza , krawedz pola nie musi byc krawedzia kszataltu
 			{
 				for(k=j-1;k<j+2;k++)
 				{
@@ -345,5 +345,4 @@ void negatyw(element *first)
           }
 }
 #endif // HEADER2_H
-
 
