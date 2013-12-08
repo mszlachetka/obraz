@@ -26,6 +26,12 @@ void komendymenuglownego();
 void wyswietlinfo(element *first);
 void wykryjkrawedz(element *first);
 void negatyw(element *first);
+void obrot(element *first);
+void komendyobrotu();
+void obrot90(element *first);
+void obrot180(element *first);
+void obrot270(element *first);
+void inittab(element *temp);
 
 
 void menuglowne(element *lista, plik obraz)
@@ -63,8 +69,8 @@ void menuglowne(element *lista, plik obraz)
 		case '4.1':
 			
 			break;
-		case '4.2':
-			
+		case '4':
+			obrot(lista);
 			break;
 		case '5':
 			
@@ -95,6 +101,13 @@ void komendymenuglownego()
 	 printf("6-zakoncz\n");
 }
 
+void komendyobrotu()
+{
+	printf("\nOBROT O: \n");
+	 printf("1-90 w prawo\n");
+	 printf("2-180\n");
+	 printf("3-90 w lewo\n");	
+}
 
 
 element * push(element * first, element * newone)
@@ -220,9 +233,7 @@ element * dodaj(element *first,plik obraz)
 								fscanf(obraz,"%d",&temp->odcien);
                         
                                 
-                                 temp->tab=(int**)malloc(temp->rozmiary*sizeof(int*));
-                                 for(i=0;i<temp->rozmiary;i++)
-                                        temp->tab[i] = (int*)malloc(temp->rozmiarx*sizeof(int));
+                                inittab(temp);
 
                                 
                                   for(i=0;i<temp->rozmiary;i++)
@@ -344,5 +355,142 @@ void negatyw(element *first)
          
           }
 }
+
+void obrot(element*first)
+{
+	char znak;
+	komendyobrotu();
+	getchar();
+	znak=getchar();
+	switch (znak)
+	{
+		case '1':
+			obrot90(first);
+			break;
+		case '2':
+			obrot180(first);
+			break;
+		case '3':
+			obrot270(first);
+			break;
+		default:
+			komendyobrotu();
+	}
+}
+
+void obrot90(element *first)
+{
+	int i=0,j=0;
+	int x;
+	int y;
+	element *temp;
+	temp=(element *)malloc(sizeof(element));
+	temp->rozmiarx=first->rozmiary;
+	temp->rozmiary=first->rozmiarx;
+	x=temp->rozmiarx-1;
+	y=temp->rozmiary-1;
+	inittab(temp);
+
+
+for(i=0;i<temp->rozmiary;i++)
+           {
+           for(j=0;j<temp->rozmiarx;j++)
+           {
+			temp->tab[i][x-j]=first->tab[j][i];//obrot 90 w prawo
+           }
+            
+          }
+for(i=0;i<temp->rozmiary;i++)
+           {
+           for(j=0;j<temp->rozmiarx;j++)
+           {
+			  //first->tab[i][j]=temp->tab[i][j];
+             printf("%d ",temp->tab[i][j]);
+           }
+             printf("\n");
+         
+          }
+}
+void obrot180(element *first)
+{
+	int i=0,j=0;
+	int x=0,y=0;
+	element *temp;
+	temp=(element *)malloc(sizeof(element));
+	temp->rozmiarx=first->rozmiarx;
+	temp->rozmiary=first->rozmiary;
+	x=temp->rozmiarx-1;
+	
+	y=temp->rozmiary-1;
+	inittab(temp);
+	
+
+	for(i=0;i<first->rozmiary;i++)
+           {
+           for(j=0;j<first->rozmiarx;j++)
+           {
+			temp->tab[y-i][x-j]=first->tab[i][j];//obrot
+			   
+           }
+            
+		}
+
+	for(i=0;i<temp->rozmiary;i++)
+           {
+           for(j=0;j<temp->rozmiarx;j++)
+           {
+             printf("%d ",temp->tab[i][j]);
+           }
+             printf("\n");
+     
+          }
+
+
+}
+
+void obrot270(element *first)
+{
+int i=0,j=0;
+	int x;
+	int y;
+	element *temp;
+	temp=(element *)malloc(sizeof(element));
+	temp->rozmiarx=first->rozmiary;
+	temp->rozmiary=first->rozmiarx;
+	x=temp->rozmiarx-1;
+	y=temp->rozmiary-1;
+	inittab(temp);
+
+
+for(i=0;i<temp->rozmiary;i++)
+           {
+           for(j=0;j<temp->rozmiarx;j++)
+           {
+            temp->tab[y-i][j]=first->tab[j][i];//obrot 90 w lewo
+			
+           }
+            
+          }
+for(i=0;i<temp->rozmiary;i++)
+           {
+           for(j=0;j<temp->rozmiarx;j++)
+           {
+			  //first->tab[i][j]=temp->tab[i][j];
+             printf("%d ",temp->tab[i][j]);
+           }
+             printf("\n");
+         
+          }
+}
+
+void inittab(element *temp)
+{
+	int i=0;
+	 
+	 temp->tab=(int**)malloc(temp->rozmiary*sizeof(int*));
+          for(i=0;i<temp->rozmiary;i++)
+              temp->tab[i] = (int*)malloc(temp->rozmiarx*sizeof(int));
+}
 #endif // HEADER2_H
+
 
