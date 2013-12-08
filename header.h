@@ -51,30 +51,30 @@ void menuglowne(element *lista, plik obraz)
 	{
 		case '1':
 			lista=dodaj(lista,obraz);
+			//wyswietlinfo();
 			break;
 		case '2':
 			wyswietl(lista);
-			wyswietlinfo(pozycja(lista,poz));
 			break;
 		case '3':
 			negatyw(lista);
 			break;
-		case 'a':
+		case '4':
 			wykryjkrawedz(lista);
 			break;
-		case '3.3':
-			
-			break;
-		case '4.1':
-			
-			break;
-		case '4':
-			obrot(lista);
-			break;
 		case '5':
-			zapisz(lista,obraz);
+			
 			break;
 		case '6':
+			
+			break;
+		case '7':
+			obrot(lista);
+			break;
+		case '8':
+			zapisz(lista,obraz);
+			break;
+		case '9':
 			lista=usun(lista);
 			koniec=1;
 				break;
@@ -90,13 +90,13 @@ void komendymenuglownego()
 	printf("\nMENU GLOWNE: \n");
 	 printf("1-wczytaj obraz\n");
 	 printf("2-wyswietl liste\n");
-	 printf("3.1-negatyw\n");
-	 printf("3.2-krawedzie\n");
-	 printf("3.3-cos jeszcze\n");
-	 printf("4.1-zmien rozmiar\n");
-	 printf("4.2-obroc\n");
-	 printf("5-zapisz\n");
-	 printf("6-zakoncz\n");
+	 printf("3-negatyw\n");
+	 printf("4-krawedzie\n");
+	 printf("5-cos jeszcze\n");
+	 printf("6-zmien rozmiar\n");
+	 printf("7-obroc\n");
+	 printf("8-zapisz\n");
+	 printf("9-zakoncz\n");
 }
 
 void komendyobrotu()
@@ -456,7 +456,7 @@ void obrot180(element *first)
            {
              first->tab[i][j]=temp->tab[i][j];
            }
-             printf("\n");
+            // printf("\n");
      
           }
 
@@ -509,6 +509,13 @@ void inittab(element *temp)
 
 void zapisz(element *first,plik obraz)
 {
+	
+	if(first==NULL)
+	{
+		printf("brak plikow do zapisania\n");
+	}
+	else
+	{
 	int i=0,j=0;
 	int znak;
 	printf("\n1-nadpisac obecny plik?\n2-zapisac jako odrebny?\n");
@@ -560,11 +567,12 @@ void zapisz(element *first,plik obraz)
 		zapisz(first,obraz);
 
 	}
-	
+	}
 }
 
 
 #endif // HEADER2_H
+
 
 
 
