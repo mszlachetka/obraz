@@ -53,8 +53,6 @@ void menuglowne(element *lista, plik obraz)
 			break;
 		case '2':
 			wyswietl(lista);
-			printf("Na ktorym obrazie chcesz pracowac? ");
-			scanf("%d", poz);
 			wyswietlinfo(pozycja(lista,poz));
 			break;
 		case '3':
@@ -268,13 +266,24 @@ element * dodaj(element *first,plik obraz)
 
 void wyswietlinfo(element *first)
 {
-	
+		if(first==NULL)
+	{
+		printf("brak plikow do wyswietlenia\n");
+	}
+	else
+	{
 	      printf("\nP%d\nrozmiary: %d\nrozmiarx: %d\nodcien: %d\n",first->tryb,first->rozmiary,first->rozmiarx,first->odcien);
-                
+	}           
 }
 
 void wykryjkrawedz(element *first)
 {
+	if(first==NULL)
+	{
+		printf("brak plikow do przetworzenia\n");
+	}
+	else
+	{
 	int i=0,j=0,k=0,m=0,counter=0,ile=0;
 	element *temp;
 	 temp=(element *)malloc(sizeof(element));
@@ -337,11 +346,18 @@ void wykryjkrawedz(element *first)
   
          
 	
-
+	}
 }
 
 void negatyw(element *first)
 {
+
+	if(first==NULL)
+	{
+		printf("brak plikow do przetworzenia\n");
+	}
+	else
+	{
 		int i=0,j=0;
 
 	for(i=0;i<first->rozmiary;i++)
@@ -354,10 +370,17 @@ void negatyw(element *first)
              printf("\n");
          
           }
+	}
 }
 
 void obrot(element*first)
 {
+	if(first==NULL)
+	{
+		printf("brak plikow do przetworzenia\n");
+	}
+	else
+	{
 	char znak;
 	komendyobrotu();
 	getchar();
@@ -375,6 +398,7 @@ void obrot(element*first)
 			break;
 		default:
 			komendyobrotu();
+	}
 	}
 }
 
