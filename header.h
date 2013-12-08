@@ -24,12 +24,14 @@ element * dodaj(element *first, plik obraz);
 void menuglowne(element *first,plik obraz);
 void komendymenuglownego();
 void wyswietlinfo(element *first);
+void wykryjkrawedz(element *first);
+void negatyw(element *first);
 
 
 void menuglowne(element *lista, plik obraz)
 {
 	int koniec=0;
-	int znak;
+	char znak;
 	int poz=0;
    
 	komendymenuglownego();
@@ -45,16 +47,15 @@ void menuglowne(element *lista, plik obraz)
 			break;
 		case '2':
 			wyswietl(lista);
-			   printf("Na ktorym obrazie chcesz pracowac? ");
-				scanf("%d", poz);
-				lista=pozycja(lista,poz);
-			
+			printf("Na ktorym obrazie chcesz pracowac? ");
+			scanf("%d", poz);
+			wyswietlinfo(pozycja(lista,poz));
 			break;
-		case '3.1':
-			
+		case '3':
+			negatyw(lista);
 			break;
-		case '3.2':
-			
+		case 'a':
+			wykryjkrawedz(lista);
 			break;
 		case '3.3':
 			
@@ -67,6 +68,7 @@ void menuglowne(element *lista, plik obraz)
 			break;
 		case '5':
 			
+			  
 			break;
 		case '6':
 			lista=usun(lista);
@@ -92,11 +94,6 @@ void komendymenuglownego()
 	 printf("5-zapisz\n");
 	 printf("6-zakoncz\n");
 }
-
-
-
-
-
 
 
 
@@ -198,7 +195,7 @@ element * dodaj(element *first,plik obraz)
                             if(temp->tryb==1)  
 							{
                                 fscanf(obraz,"%d%d",&temp->rozmiarx,&temp->rozmiary);
-                        
+								temp->odcien=1;
                                 
                                  temp->tab=(int**)malloc(temp->rozmiary*sizeof(int*));
                                  for(i=0;i<temp->rozmiary;i++)
@@ -264,5 +261,89 @@ void wyswietlinfo(element *first)
 	      printf("\nP%d\nrozmiary: %d\nrozmiarx: %d\nodcien: %d\n",first->tryb,first->rozmiary,first->rozmiarx,first->odcien);
                 
 }
+
+void wykryjkrawedz(element *first)
+{
+	int i=0,j=0,k=0,m=0,counter=0,ile=0;
+	element *temp;
+	 temp=(element *)malloc(sizeof(element));
+		 temp->tab=(int**)malloc(first->rozmiary*sizeof(int*));
+			for(i=0;i<first->rozmiary;i++)
+              temp->tab[i] = (int*)malloc(first->rozmiarx*sizeof(int));
+
+////wydrukuj to co na poczatku
+	for(i=0;i<first->rozmiary;i++)
+           {
+           for(j=0;j<first->rozmiarx;j++)
+           {
+             printf("%d ",first->tab[i][j]);
+           }
+             printf("\n");
+         
+          }
+	 printf("\n");
+////
+//////wydrukuj ile pol jest zapelnionych <na 3x3 od danego pola>
+	for(i=0;i<first->rozmiary;i++)
+      {
+          for(j=0;j<first->rozmiarx;j++)
+          {
+			if(first->tab[i][j]!=0 && j>0 && i>0)// zewnetrznych nie bede zmienial bo nie wiem jakby co jest poza , krawedz pola nie musi byc krawedzia kszataltu
+			{
+				for(k=j-1;k<j+2;k++)
+				{
+					for(m=i-1;m<i+2;m++)
+					{
+						if(first->tab[m][k]!=0) counter++;
+					}
+				
+				}
+				
+			 }
+			ile++;
+			if(counter==9) 
+			{
+				temp->tab[i][j]=1;	
+			}
+			printf("%d ",counter);
+			counter=0;
+		   }
+			printf("\n");
+	}
+//////////
+	printf("ile:%d\n",ile);
+			
+		for(i=0;i<first->rozmiary;i++)
+           {
+           for(j=0;j<first->rozmiarx;j++)
+           {
+			   if(temp->tab[i][j]==1) first->tab[i][j]=0;
+             printf("%d ",first->tab[i][j]);
+           }
+             printf("\n");
+         
+          }
+  
+         
+	
+
+}
+
+void negatyw(element *first)
+{
+		int i=0,j=0;
+
+	for(i=0;i<first->rozmiary;i++)
+           {
+           for(j=0;j<first->rozmiarx;j++)
+           {
+			   first->tab[i][j]=first->odcien-first->tab[i][j];
+             printf("%d ",first->tab[i][j]);
+           }
+             printf("\n");
+         
+          }
+}
 #endif // HEADER2_H
+
 
