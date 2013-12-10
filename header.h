@@ -3,6 +3,8 @@
 
 typedef FILE *plik;
 
+int CZYJAKAKOLWIEKZMIANA;
+
 typedef struct element
 {
         struct element *next;
@@ -12,16 +14,20 @@ typedef struct element
         int rozmiary;
         int odcien;
         int **tab;
+		int czyzapisano;
 } element;
 
 
 element * push(element * first, element * newone);
-void wyswietl(element * first);
+
 element * usun(element * first);
 element * pozycja(element *first, int pos);
 element * dodaj(element *first, plik obraz);
-void zapisz(element *first,plik obraz);
 
+int wybor(element *lista);
+int maxlista(element *lista);
+
+void wyswietl(element * first);
 void menuglowne(element *first,plik obraz);
 void komendymenuglownego();
 void wyswietlinfo(element *first);
@@ -33,13 +39,14 @@ void obrot90(element *first);
 void obrot180(element *first);
 void obrot270(element *first);
 void inittab(element *temp);
-
+void zapisz(element *first,plik obraz, int trybzapisu);
+void zapiskoncowy(element *first,plik obraz);
+int  zakres(int wartosc, int max);
 
 void menuglowne(element *lista, plik obraz)
 {
 	int koniec=0;
 	char znak;
-	int poz=0;
    
 	komendymenuglownego();
 	
@@ -51,16 +58,15 @@ void menuglowne(element *lista, plik obraz)
 	{
 		case '1':
 			lista=dodaj(lista,obraz);
-			//wyswietlinfo();
 			break;
 		case '2':
-			wyswietl(lista);
+			wyswietlinfo(pozycja(lista,wybor(lista)));
 			break;
 		case '3':
-			negatyw(lista);
+			negatyw(pozycja(lista,wybor(lista)));
 			break;
 		case '4':
-			wykryjkrawedz(lista);
+			wykryjkrawedz(pozycja(lista,wybor(lista)));
 			break;
 		case '5':
 			
@@ -69,12 +75,13 @@ void menuglowne(element *lista, plik obraz)
 			
 			break;
 		case '7':
-			obrot(lista);
+			obrot(pozycja(lista,wybor(lista)));
 			break;
 		case '8':
-			zapisz(lista,obraz);
+			zapisz((pozycja(lista,wybor(lista))),obraz,0);
 			break;
 		case '9':
+			zapiskoncowy(lista, obraz);
 			lista=usun(lista);
 			koniec=1;
 				break;
@@ -89,7 +96,7 @@ void komendymenuglownego()
 {
 	printf("\nMENU GLOWNE: \n");
 	 printf("1-wczytaj obraz\n");
-	 printf("2-wyswietl liste\n");
+	 printf("2-wyswietl dane pliku\n");
 	 printf("3-negatyw\n");
 	 printf("4-krawedzie\n");
 	 printf("5-cos jeszcze\n");
@@ -180,7 +187,7 @@ element * dodaj(element *first,plik obraz)
         obraz=fopen(temp->nazwa,"r");
         if(obraz!=NULL)
         {
-                
+                 temp->czyzapisano=1;
                 znak=fgetc(obraz);
                 fseek(obraz,-1,SEEK_CUR);
                 while(znak!=EOF)
@@ -249,7 +256,7 @@ element * dodaj(element *first,plik obraz)
                                 
                     }
                         
-        
+       
           
 
         fclose(obraz);
@@ -272,7 +279,9 @@ void wyswietlinfo(element *first)
 	}
 	else
 	{
-	      printf("\nP%d\nrozmiary: %d\nrozmiarx: %d\nodcien: %d\n",first->tryb,first->rozmiary,first->rozmiarx,first->odcien);
+	      printf("\n%s\nP%d\nrozmiary: %d\nrozmiarx: %d\nodcien: %d\nczyzapisano:",first->nazwa,first->tryb,first->rozmiary,first->rozmiarx,first->odcien);
+		  if(first->czyzapisano==1) printf("tak\n");
+		  if(first->czyzapisano==0) printf("nie\n");
 	}           
 }
 
@@ -285,16 +294,15 @@ void wykryjkrawedz(element *first)
 	else
 	{
 	int i=0,j=0,k=0,m=0,counter=0;
+	
 	element *temp;
-	 temp=(element *)malloc(sizeof(element));
-		 temp->tab=(int**)malloc(first->rozmiary*sizeof(int*));
-			for(i=0;i<first->rozmiary;i++)
-              temp->tab[i] = (int*)malloc(first->rozmiarx*sizeof(int));
+	temp=(element *)malloc(sizeof(element));
+	temp->rozmiarx=first->rozmiarx;
+	temp->rozmiary=first->rozmiary;//sam podaje rozmiary bo moge potrzebowac tymczasowej np odwroconej
+	inittab(temp);
 
 
 
-
-//////wydrukuj ile pol jest zapelnionych <na 3x3 od danego pola>
 	for(i=0;i<first->rozmiary;i++)
       {
           for(j=0;j<first->rozmiarx;j++)
@@ -336,8 +344,9 @@ void wykryjkrawedz(element *first)
           }
   
          
-	
-	}
+		first->czyzapisano=0;
+		CZYJAKAKOLWIEKZMIANA=1;
+		}
 }
 
 void negatyw(element *first)
@@ -361,6 +370,8 @@ void negatyw(element *first)
              //printf("\n");
          
           }
+	first->czyzapisano=0;
+	CZYJAKAKOLWIEKZMIANA=1;
 	}
 }
 
@@ -415,6 +426,7 @@ for(i=0;i<temp->rozmiary;i++)
            }
             
           }
+
 for(i=0;i<temp->rozmiary;i++)
            {
            for(j=0;j<temp->rozmiarx;j++)
@@ -425,6 +437,8 @@ for(i=0;i<temp->rozmiary;i++)
              printf("\n");
          
           }
+	first->czyzapisano=0;
+	CZYJAKAKOLWIEKZMIANA=1;
 }
 void obrot180(element *first)
 {
@@ -435,7 +449,6 @@ void obrot180(element *first)
 	temp->rozmiarx=first->rozmiarx;
 	temp->rozmiary=first->rozmiary;
 	x=temp->rozmiarx-1;
-	
 	y=temp->rozmiary-1;
 	inittab(temp);
 	
@@ -460,7 +473,8 @@ void obrot180(element *first)
      
           }
 
-
+	first->czyzapisano=0;
+	CZYJAKAKOLWIEKZMIANA=1;
 }
 
 void obrot270(element *first)
@@ -496,6 +510,8 @@ for(i=0;i<temp->rozmiary;i++)
              printf("\n");
          
           }
+first->czyzapisano=0;
+CZYJAKAKOLWIEKZMIANA=1;
 }
 
 void inittab(element *temp)
@@ -507,17 +523,20 @@ void inittab(element *temp)
               temp->tab[i] = (int*)malloc(temp->rozmiarx*sizeof(int));
 }
 
-void zapisz(element *first,plik obraz)
+void zapisz(element *first,plik obraz, int trybzapisu)
 {
-	
 	if(first==NULL)
 	{
 		printf("brak plikow do zapisania\n");
 	}
 	else
 	{
-	int i=0,j=0;
-	int znak;
+		int i=0,j=0;
+		int znak;
+
+	if(trybzapisu==0)
+	{
+	
 	printf("\n1-nadpisac obecny plik?\n2-zapisac jako odrebny?\n");
 	getchar();
 	znak=getchar();
@@ -564,15 +583,143 @@ void zapisz(element *first,plik obraz)
 	else
 	{
 		printf("niepoprawna komenda, sproboj ponownie\n");
-		zapisz(first,obraz);
+		zapisz(first,obraz,trybzapisu);
 
+	}
+	}
+	else if(trybzapisu==1)
+	{
+	 obraz=fopen(first->nazwa,"w");
+	 fprintf(obraz,"P%d\n",first->tryb);
+	 fprintf(obraz,"%d %d\n",first->rozmiarx,first->rozmiary);
+	 if(first->tryb==2) fprintf(obraz,"%d\n",first->odcien);
+
+	 for(i=0;i<first->rozmiary;i++)
+           {
+           for(j=0;j<first->rozmiarx;j++)
+           {
+             if(j!=first->rozmiarx-1) fprintf(obraz,"%d ",first->tab[i][j]);
+			 else fprintf(obraz,"%d",first->tab[i][j]);
+           }
+             if(i!=first->rozmiary-1) fprintf(obraz,"\n");
+          }
+		fclose(obraz);
+	}
+	else if(trybzapisu==2)
+	{
+		char nazwa[50];
+		printf("podaj nazwe pliku:");
+		scanf("%s",nazwa);
+	obraz=fopen(nazwa,"w");
+	 fprintf(obraz,"P%d\n",first->tryb);
+	 fprintf(obraz,"%d %d\n",first->rozmiarx,first->rozmiary);
+	 if(first->tryb==2) fprintf(obraz,"%d\n",first->odcien);
+
+	 for(i=0;i<first->rozmiary;i++)
+           {
+           for(j=0;j<first->rozmiarx;j++)
+           {
+             if(j!=first->rozmiarx-1) fprintf(obraz,"%d ",first->tab[i][j]);
+			 else fprintf(obraz,"%d",first->tab[i][j]);
+           }
+             if(i!=first->rozmiary-1) fprintf(obraz,"\n");
+          }
+		fclose(obraz);
+
+	}
+
+}
+}
+
+int wybor(element *lista)
+{
+	int poz=0;
+	wyswietl(lista);
+	printf("Na ktorym elemencie listy chcesz pracowac?\n");
+	scanf("%d",&poz);
+	if( poz<maxlista(lista) && poz>=0) return poz;
+	else
+	{
+		printf("wartosc spoza zakresu\n");
+	    wybor(lista);
+		return -1;
+	}
+
+}
+
+int zakres(int wartosc, int max)
+{
+	scanf("%d",&wartosc);
+	if( wartosc<=max && wartosc>=0) 
+	{
+		return wartosc;
+	}
+	else
+	{
+		printf("nie znana komenda\n");
+		zakres(wartosc,max);
+		return 0;
+	}
+}
+
+int maxlista(element *lista)
+{
+	element *temp=lista;
+	int counter=0;
+	if(lista==NULL)
+        {
+              return -1;
+        }
+        do
+        {
+                
+               counter++;
+                temp=temp->next;
+                
+        }while(temp!=NULL);
+		return counter;
+}
+
+void zapiskoncowy(element *lista,plik obraz)
+{
+	int trybzapisu=0;//0-zapisuj pytajac pokolei , 1-zapisz wszystkie zmienione (nadpisujac), 2-zapisz wszystkie zmienione podajac nazwe nowego pliku
+	int czyzapisaczmiany=0;
+	
+	
+	if(lista!=NULL)
+	{
+	if(CZYJAKAKOLWIEKZMIANA==1)
+	{
+	element *temp=lista;
+	int ile=maxlista(lista);
+	printf("czy chcesz zapisac niezapisane zmiany?\n0-nie\n1-tak\n");
+	czyzapisaczmiany=zakres(czyzapisaczmiany,1);
+	if(czyzapisaczmiany==1)
+	{
+	printf("wybierz sposob zapisu:\n0-zapis pojedynczego pliku\n1-zapisz wszystkie zmienione nadpisujac\n2-zapisz wszystkie zmienione podajac nazwe nowego pliku\n");
+	trybzapisu=zakres(trybzapisu,2);
+        do
+        {
+                if(temp->czyzapisano==0 && ile>=0);
+				{
+				printf("%s\n",temp->nazwa);
+				zapisz(pozycja(temp,ile),obraz,trybzapisu);
+				ile--;
+				}
+                temp=temp->next;
+                
+        }while(temp!=NULL);
+		if(temp==NULL)
+        {
+             printf("wszystkie pliki sa zaatualizowane\n");
+        }
+		free(temp);
+	}
+	
 	}
 	}
 }
 
-
 #endif // HEADER2_H
-
-
 
 
