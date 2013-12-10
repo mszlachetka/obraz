@@ -373,21 +373,16 @@ void wykryjkrawedz(element *first)
 						{
 						}
 						else if(first->tab[i-1][j]!=first->tab[i+1][j])
-							{
+						{
 						}
 						else if(first->tab[i][j-1]==first->tab[i][j+1] && first->tab[i][j+1]!=first->tab[i][j]) 
-							{
+						{
 						}
 						else if(first->tab[i][j-1]!=first->tab[i][j+1]) 
-							{
-						}
-						else if(first->tab[i-1][j-1]==first->tab[i+1][j+1] && first->tab[i-1][j-1]!=first->tab[i][j])
-							{
-						}
-						else if(first->tab[i-1][j-1]!=first->tab[i+1][j+1]) 
-							{
+						{
 						}
 						else  temp->tab[i][j]=0;
+						
 			 }
 			
 		}
@@ -800,4 +795,5 @@ void zapiskoncowy(element *lista,plik obraz)
 }
 
 #endif // HEADER2_H
+
 
