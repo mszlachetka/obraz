@@ -3,8 +3,6 @@
 
 typedef FILE *plik;
 
-int CZYJAKAKOLWIEKZMIANA;
-
 typedef struct element
 {
         struct element *next;
@@ -296,69 +294,11 @@ void wyswietlinfo(element *first)
         }           
 }
 
-/*element * dodaj(element *first, plik obraz)//p.Ostrowski
-{
-	element *temp;
-	char znak;
-	int i=0,j=0;
-	temp=(element *)malloc(sizeof(element));
-	printf("podaj nazwe pliku:");
-	scanf("%s",temp->nazwa);
-	temp->next=NULL;
-
-    obraz=fopen(temp->nazwa,"r");
-	if(obraz!=NULL)
-	{
-		
-		znak=fgetc(obraz);
-        if(znak!='P')
-            return first;
-        znak=fgetc(obraz);
-        if(znak=='1')
-            temp->tryb=1;
-        else if(znak=='2')
-            temp->tryb=2;
-        else
-            return first;
-
-        znak=fgetc(obraz);
-        while(znak=='\n' || znak=='\r')
-            znak=fgetc(obraz);
-        while(znak=='#' || znak==EOF)
-        {
-            while(znak!='\n')
-            {
-                znak=fgetc(obraz);
-            }
-            znak=fgetc(obraz);
-        }
-		fseek(obraz,-1,SEEK_CUR);
-		
-        fscanf(obraz,"%d %d\n%d",&temp->rozmiarx,&temp->rozmiary,&temp->odcien);
-        inittab(temp);
-	
-        for(i=0;i<temp->rozmiary;i++)
-           for(j=0;j<temp->rozmiarx;j++)
-		   {
-                fscanf(obraz,"%d",&temp->tab[i][j]);
-		   }
-		printf("P%d\nrozmiarx: %d\nrozmiary: %d\n",temp->tryb,temp->rozmiarx,temp->rozmiary);
-        fclose(obraz);
-	}
-	else
-	{
-        perror("Nastapil blad w odczycie z pliku: ");
-        temp=usun(temp);
-	}
-	
-	return push(first,temp);
-}*/
 
 void wykryjkrawedz(element *first)
 {
         int i=0,j=0,k=0,m=0,counter=0;
-		int stala_krawedzi;
-			stala_krawedzi=0,1*first->odcien;
+		negatyw(first);
         if(first==NULL)
         {
                 printf("brak plikow do przetworzenia\n");
@@ -441,44 +381,15 @@ void wykryjkrawedz(element *first)
                         if( j>0 && i>0 && i<first->rozmiary-1 && j<first->rozmiarx-1)
                         {
 
-                                               /*if(first->tab[i-1][j]==first->tab[i+1][j] && (first->tab[i-1][j])!=first->tab[i][j])
-                                                {
-                                                }
-                                                else if(first->tab[i-1][j]!=first->tab[i+1][j])
-                                                {
-                                                }
-                                                else if(first->tab[i][j-1]==first->tab[i][j+1] && (first->tab[i][j+1])!=first->tab[i][j]) 
-                                                {
-                                                }
-                                                else if(first->tab[i][j-1]!=first->tab[i][j+1]) 
-                                                {
-                                                }
-												else if(first->tab[i-1][j-1]==first->tab[i+1][j+1] && (first->tab[i-1][j-1])!=first->tab[i][j])
-                                                {
-                                                }
-                                                else if(first->tab[i-1][j-1]!=first->tab[i+1][j+1])
-                                                {
-                                                }
-												else if(first->tab[i-1][j-1]==first->tab[i-1][j+1] && (first->tab[i-1][j-1])!=first->tab[i][j])
-                                                {
-                                                }
-                                                else if(first->tab[i-1][j-1]!=first->tab[i-1][j+1])
-                                                {
-                                                }
-										        else if(first->tab[i-1][j-1]==first->tab[i+1][j-1] && (first->tab[i-1][j-1])!=first->tab[i][j])
-                                                {
-                                                }
-                                                else if(first->tab[i-1][j-1]!=first->tab[i+1][j-1])
-                                                {
-                                                }
-                                                else  temp->tab[i][j]=0;*/
+                                               
 
-							 for(k=j-1;k<j+1;k++)
+							 for(k=j;k<j+1;k++)
                                 {
-                                        for(m=i-1;m<i+1;m++)
+                                        for(m=i;m<i+1;m++)
                                         {
-                                             if(first->tab[m][k]==first->tab[m+1][k] && first->tab[m][k]!=first->tab[m][k]);
-											 else if(first->tab[m][k]!=first->tab[m+1][k]);
+                                             
+											 if(first->tab[m-1][k]!=first->tab[m+1][k]);
+											 else if (first->tab[m][k-1]!=first->tab[m][k+1]);
 											 else temp->tab[i][j]=0;
                                         }
                                 
@@ -515,9 +426,9 @@ void wykryjkrawedz(element *first)
         }
 
   
-         
-                first->czyzapisano=0;
-                CZYJAKAKOLWIEKZMIANA=1;
+         negatyw(first);
+          first->czyzapisano=0;
+               
 
 }
 }
@@ -544,7 +455,7 @@ void negatyw(element *first)
          
           }
         first->czyzapisano=0;
-        CZYJAKAKOLWIEKZMIANA=1;
+        
         }
 }
 
@@ -606,7 +517,7 @@ for(i=0;i<temp->rozmiary;i++)
         
            }        
                 }
-        CZYJAKAKOLWIEKZMIANA=1;
+       
         first->czyzapisano=0;
 }
 void obrot180(element *first)
@@ -643,7 +554,7 @@ void obrot180(element *first)
           }
 
         first->czyzapisano=0;
-        CZYJAKAKOLWIEKZMIANA=1;
+        
 }
 
 void obrot270(element *first)
@@ -680,7 +591,7 @@ for(i=0;i<temp->rozmiary;i++)
          
           }
 first->czyzapisano=0;
-CZYJAKAKOLWIEKZMIANA=1;
+
 }
 
 void inittab(element *temp)
