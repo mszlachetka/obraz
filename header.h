@@ -31,6 +31,7 @@ void menuglowne(element *first,plik obraz);
 void komendymenuglownego();
 void wyswietlinfo(element *first);
 void wykryjkrawedz(element *first);
+
 void negatyw(element *first);
 void obrot(element *first);
 void komendyobrotu();
@@ -64,7 +65,7 @@ void menuglowne(element *lista, plik obraz)
                 case '2':
                         wyswietlinfo(pozycja(lista,wybor(lista)));
                         break;
-                case '3.1':
+                case '3':
                         negatyw(pozycja(lista,wybor(lista)));
                         break;
                 case '4':
@@ -102,7 +103,6 @@ void komendymenuglownego()
          printf("3-negatyw\n");
          printf("4-krawedzie\n");
          printf("5-zmiany cieniowania\n");
-                 printf("5.5-przeklej fragment jednego obrazu do drugiego\n");
          printf("6-zmien rozmiar\n");
          printf("7-obroc\n");
          printf("8-zapisz\n");
@@ -302,7 +302,7 @@ void wykryjkrawedz(element *first)
 {
         int i=0,j=0,k=0,m=0,counter=0;
       
-		
+  
         if(first==NULL)
         {
                 printf("brak plikow do przetworzenia\n");
@@ -312,15 +312,15 @@ void wykryjkrawedz(element *first)
         element *temp;
         element *temp2;
        temp=(element *)malloc(sizeof(element));
-	    temp2=(element *)malloc(sizeof(element));
+            temp2=(element *)malloc(sizeof(element));
         temp->rozmiarx=first->rozmiarx;
         temp->rozmiary=first->rozmiary;//sam podaje rozmiary bo moge potrzebowac tymczasowej np odwroconej
-		 temp2->rozmiarx=first->rozmiarx;
+                 temp2->rozmiarx=first->rozmiarx;
         temp2->rozmiary=first->rozmiary;
         inittab(temp);
-		inittab(temp2);
-		negatyw(first);
-	
+                inittab(temp2);
+                negatyw(first);
+        
  /*filtr sklada sie z dwoch czesci . 
  1 to filtr cieniowany , wychodza grube krawedzie , ale uzwgledni roznice w odcieniach (krawedzie roznych barw) , 
  2 czesc to filtr czarno-bialy, ktory odchudza powstale krawedzie i zostawia czarne brzegi rysunku
@@ -333,7 +333,7 @@ void wykryjkrawedz(element *first)
           {
                         
                                 temp->tab[i][j]=first->tab[i][j];
-								temp2->tab[i][j]=first->tab[i][j];           
+                                                                temp2->tab[i][j]=first->tab[i][j];           
                   }
                 
                 }
@@ -345,26 +345,8 @@ void wykryjkrawedz(element *first)
           {
                         if( j>0 && i>0 && i<first->rozmiary-1 && j<first->rozmiarx-1)
                         {
-					
-                               for(k=j;k<j+1;k++)//kontrast 3x3 w temp
-                                {
-                                        for(m=i;m<i+1;m++)
-                                        {
-                                          if(first->tab[i][j]<=(first->odcien/2))
-                                           {                
-                                                  temp->tab[i][j]=0;                
-                                           }
-                                           else if(first->tab[i][j]>(first->odcien/2))
-                                           {
-                                                
-                                                  temp->tab[i][j]=first->odcien;
-                      
-                                           }
-                                                                                     
-                                        }
-                                
-								 }
-
+                                        
+                           
 
 
                                for(k=j;k<j+1;k++)//sprawdzanie czy krawedz w 3x3 , przypisanie zmian do temp2
@@ -374,15 +356,15 @@ void wykryjkrawedz(element *first)
                                              
                                                                                          if(temp->tab[m-1][k]!=temp->tab[m+1][k]);
                                                                                          else if (temp->tab[m][k-1]!=temp->tab[m][k+1]);
-                                                                                          else if (temp->rozmiarx<100 && temp->rozmiary<100 && temp->tab[m][k-1]==temp->tab[m][k+1] && temp->tab[m][k-1]!=temp->tab[m][k]);
-                                                                                            else if (temp->rozmiarx<100 && temp->rozmiary<100 && temp->tab[m-1][k]==temp->tab[m+1][k] && temp->tab[m-1][k]!=temp->tab[m][k]);
-																							else temp2->tab[i][j]=0;
+                                                                                          else if (  temp->tab[m][k-1]==temp->tab[m][k+1] && temp->tab[m][k-1]!=temp->tab[m][k]);
+                                                                                            else if (temp->tab[m-1][k]==temp->tab[m+1][k] && temp->tab[m-1][k]!=temp->tab[m][k]);
+                                                                                            else temp2->tab[i][j]=0;
                                         }
                                 
                                 }
 
                                      for(k=j;k<j+1;k++)//powrot wartosci w temp
-									 {
+                                       {
                                         for(m=i;m<i+1;m++)
                                         {
                                         temp->tab[i][j]=first->tab[i][j];
@@ -390,7 +372,7 @@ void wykryjkrawedz(element *first)
                                                                                      
                                       }
                                 
-								 }                                             
+                                                                 }                                             
                                                 
                          }
                         
@@ -489,13 +471,13 @@ void wykryjkrawedz(element *first)
       
     
 
-		  negatyw(first);
-		  usunjeden(temp); 
-		 usunjeden(temp2);  
-		 first->czyzapisano=0;         
-	  }
+                  negatyw(first);
+                  usunjeden(temp); 
+                 usunjeden(temp2);  
+                 first->czyzapisano=0;         
+          }
 
-			 
+                         
                 
 
 }
@@ -518,9 +500,9 @@ void negatyw(element *first)
            for(j=0;j<first->rozmiarx;j++)
            {
                            first->tab[i][j]=first->odcien-first->tab[i][j];
-            // printf("%d ",first->tab[i][j]);
+           
            }
-             //printf("\n");
+             
          
           }
         first->czyzapisano=0;
@@ -1015,9 +997,9 @@ void zmienrozmiar(element *first)
         temp=(element *)malloc(sizeof(element));
         
         printf("podaj wymiary nowego obrazu:\nrozmiar X =");
-        x=zakres(x,5000);
-        printf("rozmiar Y =");
-        y=zakres(y,5000);
+        x=zakres(x,10000);
+		printf("rozmiar Y =");
+        y=zakres(y,10000);
 
         temp->rozmiarx=x;
         temp->rozmiary=y;
@@ -1045,4 +1027,6 @@ void zmienrozmiar(element *first)
         usunjeden(temp); 
           }
 }
+
+
 #endif // HEADER2_H
