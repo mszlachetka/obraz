@@ -309,7 +309,9 @@ void wykryjkrawedz(element *first)
         }
         else
         {
+        element *temp;
         
+       temp=(element *)malloc(sizeof(element));
         temp->rozmiarx=first->rozmiarx;
         temp->rozmiary=first->rozmiary;//sam podaje rozmiary bo moge potrzebowac tymczasowej np odwroconej
         inittab(temp);
@@ -363,10 +365,8 @@ void wykryjkrawedz(element *first)
         
         if(first->tryb==2)
         {
-		for(p=0;p<=first->odcien;p++)
-		{
-			
-
+	
+		
 	    for(i=0;i<first->rozmiary;i++)
            {
            for(j=0;j<first->rozmiarx;j++)
@@ -459,7 +459,7 @@ void wykryjkrawedz(element *first)
           first->czyzapisano=0;	          
 
 }
-}
+ 
 }
 
 void negatyw(element *first)
