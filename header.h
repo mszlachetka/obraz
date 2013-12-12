@@ -41,6 +41,8 @@ void inittab(element *temp);
 void zapisz(element *first,plik obraz, int trybzapisu);
 void zapiskoncowy(element *first,plik obraz);
 int  zakres(int wartosc, int max);
+void cien(element *first);
+void zmienrozmiar(element *first);
 
 void menuglowne(element *lista, plik obraz)
 {
@@ -48,11 +50,12 @@ void menuglowne(element *lista, plik obraz)
         char znak;
    
         komendymenuglownego();
-        
+       
         
         while(koniec!=1)
         {
         znak=getchar();
+		
         switch (znak)
         {
                 case '1':
@@ -61,17 +64,17 @@ void menuglowne(element *lista, plik obraz)
                 case '2':
                         wyswietlinfo(pozycja(lista,wybor(lista)));
                         break;
-                case '3':
+                case '3.1':
                         negatyw(pozycja(lista,wybor(lista)));
                         break;
                 case '4':
                         wykryjkrawedz(pozycja(lista,wybor(lista)));
                         break;
                 case '5':
-                        
+                        cien(pozycja(lista,wybor(lista)));
                         break;
                 case '6':
-                        
+                        zmienrozmiar(pozycja(lista,wybor(lista)));
                         break;
                 case '7':
                         obrot(pozycja(lista,wybor(lista)));
@@ -98,7 +101,8 @@ void komendymenuglownego()
          printf("2-wyswietl dane pliku\n");
          printf("3-negatyw\n");
          printf("4-krawedzie\n");
-         printf("5-cos jeszcze\n");
+         printf("5-zmiany cieniowania\n");
+		 printf("5.5-przeklej fragment jednego obrazu do drugiego\n");
          printf("6-zmien rozmiar\n");
          printf("7-obroc\n");
          printf("8-zapisz\n");
@@ -272,7 +276,6 @@ element * dodaj(element *first,plik obraz)
         else
         {
                 printf("nie ma takiego pliku\n");
-                temp=usun(temp);
         }
   
         return push(first,temp);
@@ -306,9 +309,7 @@ void wykryjkrawedz(element *first)
         }
         else
         {
-        element *temp;
         
-        temp=(element *)malloc(sizeof(element));
         temp->rozmiarx=first->rozmiarx;
         temp->rozmiary=first->rozmiary;//sam podaje rozmiary bo moge potrzebowac tymczasowej np odwroconej
         inittab(temp);
@@ -362,6 +363,41 @@ void wykryjkrawedz(element *first)
         
         if(first->tryb==2)
         {
+		for(p=0;p<=first->odcien;p++)
+		{
+			
+
+	    for(i=0;i<first->rozmiary;i++)
+           {
+           for(j=0;j<first->rozmiarx;j++)
+           {
+                       if(first->tab[i][j]<=(first->odcien/2))
+					   {
+						
+							
+						   first->tab[i][j]=first->tab[i][j]-first->odcien;
+						   if(first->tab[i][j]<0) first->tab[i][j]=0;		
+					   }
+					   else if(first->tab[i][j]>(first->odcien/2))
+					   {
+						
+						   first->tab[i][j]=first->tab[i][j]+first->odcien;
+						   if(first->tab[i][j]>first->odcien) first->tab[i][j]=first->odcien;
+							
+					   }
+                           
+           }
+            
+           }
+
+
+
+
+
+
+
+
+
         for(i=0;i<first->rozmiary;i++)
       {
           for(j=0;j<first->rozmiarx;j++)
@@ -423,7 +459,7 @@ void wykryjkrawedz(element *first)
           first->czyzapisano=0;	          
 
 }
- 
+}
 }
 
 void negatyw(element *first)
@@ -756,7 +792,7 @@ int zakres(int wartosc, int max)
         {
                 printf("nie znana komenda\n");
                 zakres(wartosc,max);
-                return 0;
+				return 0;
         }
 }
 
@@ -832,5 +868,141 @@ void zapiskoncowy(element *lista,plik obraz)
 	
 }
 
+void cien(element *first)
+{
+        if(first==NULL)
+        {
+                printf("brak plikow do przetworzenia\n");
+        }
+		else if(first->tryb==1)
+		{
+		printf("nie mozna zmienic cieniowania obrazu czarno-bialego\n");
+		}
+        else if(first->tryb==2);
+		{
+	int j=0,i=0;
+	int kierunek=0;
+	int kontrast=0;//zeby nie tworzyc nowej zmiennej kontrast posluzy tez do zmiany jasnosci 
+	printf("\n0-zmniejsz kontrast\n1-zwieksz kontrast\n2-rozjasnij obraz\n3-przyciemnij obraz\n");
+	kierunek=zakres(kierunek,3);
+	printf("liczba odcieni szarosci:%d\n",first->odcien);
+	if(kierunek==0) printf("podaj o ile odcieni zmniejszyc kontrast\n");
+	if(kierunek==1) printf("podaj o ile odcieni zwiekszyc kontrast\n");
+	if(kierunek==2) printf("podaj o ile odcieni rozjasnic obraz\n");
+	if(kierunek==3) printf("podaj o ile odcieni przyciemnic obraz\n");
+	kontrast=zakres(kontrast,first->odcien);
+	
+	 if(kierunek==0 || kierunek==1)
+	 {
+	    for(i=0;i<first->rozmiary;i++)
+           {
+           for(j=0;j<first->rozmiarx;j++)
+           {
+                       if(first->tab[i][j]<=(first->odcien/2))
+					   {
+						   	if(kierunek==0)
+							{
+						   first->tab[i][j]=first->tab[i][j]+kontrast;
+						   if(first->tab[i][j]>first->odcien) first->tab[i][j]=first->odcien;
+							}
+							else if(kierunek==1)
+							{
+						    first->tab[i][j]=first->tab[i][j]-kontrast;
+						   if(first->tab[i][j]<0) first->tab[i][j]=0;
+							}
 
+
+							
+					   }
+					   else if(first->tab[i][j]>(first->odcien/2))
+					   {
+						   	if(kierunek==0)
+							{
+						    first->tab[i][j]=first->tab[i][j]-kontrast;
+						   if(first->tab[i][j]<0) first->tab[i][j]=0;
+							}
+							else if(kierunek==1)
+							{
+						   first->tab[i][j]=first->tab[i][j]+kontrast;
+						   if(first->tab[i][j]>first->odcien) first->tab[i][j]=first->odcien;
+							}
+					   }
+                           
+           }
+            
+           }
+	 }
+	 if(kierunek==2 || kierunek==3)
+	 {
+	    for(i=0;i<first->rozmiary;i++)
+           {
+           for(j=0;j<first->rozmiarx;j++)
+           {
+                      
+						   	if(kierunek==2)
+							{
+						   first->tab[i][j]=first->tab[i][j]+kontrast;
+						   if(first->tab[i][j]>first->odcien) first->tab[i][j]=first->odcien;
+							}
+							else if(kierunek==3)
+							{
+						    first->tab[i][j]=first->tab[i][j]-kontrast;
+							if(first->tab[i][j]<0) first->tab[i][j]=0;
+							}
+					
+					  
+					
+           }
+            
+           }
+	 }
+		}
+}
+
+void zmienrozmiar(element *first)
+{
+	  if(first==NULL)
+        {
+                printf("brak plikow do przetworzenia\n");
+        }
+		else
+	{
+	int x=0,y=0;
+	int j=0,i=0;
+	int p=0,k=0;
+	double ratiox=0,ratioy=0;
+	element *temp;
+	temp=(element *)malloc(sizeof(element));
+	
+	printf("podaj wymiary nowego obrazu:\nrozmiar X =");
+	x=zakres(x,5000);
+	printf("rozmiar Y =");
+	y=zakres(y,5000);
+
+	temp->rozmiarx=x;
+	temp->rozmiary=y;
+	inittab(temp);
+	ratiox=(double)first->rozmiarx/x;
+	printf("ratiox:%lf\n",ratiox);
+	ratioy=(double)first->rozmiary/y;
+	printf("ratioy:%lf\n",ratioy);
+
+	for(i=0;i<temp->rozmiary;i++)
+           {
+           for(j=0;j<temp->rozmiarx;j++)
+           {
+			p=(int)(j*ratiox);
+			k=(int)(i*ratioy);
+			if(p>=first->rozmiarx) p=first->rozmiarx;
+			if(k>=first->rozmiary) k=first->rozmiary;
+			temp->tab[i][j]=first->tab[k][p];
+
+                        
+           }
+            
+          }
+		podmianatablicy(first,temp);
+	usunjeden(temp); 
+	  }
+}
 #endif // HEADER2_H
