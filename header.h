@@ -55,7 +55,7 @@ void menuglowne(element *lista, plik obraz)
         while(koniec!=1)
         {
         znak=getchar();
-		
+                
         switch (znak)
         {
                 case '1':
@@ -102,7 +102,7 @@ void komendymenuglownego()
          printf("3-negatyw\n");
          printf("4-krawedzie\n");
          printf("5-zmiany cieniowania\n");
-		 printf("5.5-przeklej fragment jednego obrazu do drugiego\n");
+                 printf("5.5-przeklej fragment jednego obrazu do drugiego\n");
          printf("6-zmien rozmiar\n");
          printf("7-obroc\n");
          printf("8-zapisz\n");
@@ -150,16 +150,16 @@ void wyswietl(element * first)
 }
 element * usun(element * first)
 {
-	int i=0,j=0;
+        int i=0,j=0;
         if(first==NULL)
                 return NULL;
 
-		
+                
         usun(first->next);
 
          for(i=0;i<first->rozmiary;i++)
-				free(first->tab[i]);
-		 free(first->tab);
+                                free(first->tab[i]);
+                 free(first->tab);
       
         free(first);
         return NULL;
@@ -209,19 +209,19 @@ element * dodaj(element *first,plik obraz)
                                 else if (znak=='2') temp->tryb=2;
                                 }
                               
-	znak=fgetc(obraz);
-	while(znak=='\n' || znak=='\r')
+        znak=fgetc(obraz);
+        while(znak=='\n' || znak=='\r')
             znak=fgetc(obraz);
         while(znak=='#' || znak==EOF)
         {
             while(znak!='\n')
             {
                 znak=fgetc(obraz);
-				 printf("%c",znak);
+                                 printf("%c",znak);
             }
             znak=fgetc(obraz);
         }
-		fseek(obraz,-1,SEEK_CUR);
+                fseek(obraz,-1,SEEK_CUR);
 
                             if(temp->tryb==1)  
                              {
@@ -249,28 +249,28 @@ element * dodaj(element *first,plik obraz)
                         
                                 
                                 inittab(temp);
-								//fseek(obraz,-1,SEEK_CUR);
+                                                                //fseek(obraz,-1,SEEK_CUR);
 
-		                 
+                                 
                                   for(i=0;i<temp->rozmiary;i++)
                                   {
                                         for(j=0;j<temp->rozmiarx;j++)
                                         {
-											fscanf(obraz,"%d",&temp->tab[i][j]);
-									
+                                                                                        fscanf(obraz,"%d",&temp->tab[i][j]);
+                                                                        
                                            znak=fgetc(obraz);
 
                                         }
-										
+                                                                                
                                 
                                   }
                           }    
                                 
                     
-			
+                        
        
           
-				
+                                
         fclose(obraz);
         }
         else
@@ -279,7 +279,7 @@ element * dodaj(element *first,plik obraz)
         }
   
         return push(first,temp);
-		 usun(temp);       
+                 usun(temp);       
 }
 
 
@@ -301,8 +301,8 @@ void wyswietlinfo(element *first)
 void wykryjkrawedz(element *first)
 {
         int i=0,j=0,k=0,m=0,counter=0;
+      
 		
-		negatyw(first);
         if(first==NULL)
         {
                 printf("brak plikow do przetworzenia\n");
@@ -310,92 +310,129 @@ void wykryjkrawedz(element *first)
         else
         {
         element *temp;
-        
+        element *temp2;
        temp=(element *)malloc(sizeof(element));
+	    temp2=(element *)malloc(sizeof(element));
         temp->rozmiarx=first->rozmiarx;
         temp->rozmiary=first->rozmiary;//sam podaje rozmiary bo moge potrzebowac tymczasowej np odwroconej
+		 temp2->rozmiarx=first->rozmiarx;
+        temp2->rozmiary=first->rozmiary;
         inittab(temp);
+		inittab(temp2);
+		negatyw(first);
+	
+ /*filtr sklada sie z dwoch czesci . 
+ 1 to filtr cieniowany , wychodza grube krawedzie , ale uzwgledni roznice w odcieniach (krawedzie roznych barw) , 
+ 2 czesc to filtr czarno-bialy, ktory odchudza powstale krawedzie i zostawia czarne brzegi rysunku
+ */
+
+//CZESC I
+        for(i=0;i<first->rozmiary;i++)//przypisanie wartosc do temp , temp2
+      {
+          for(j=0;j<first->rozmiarx;j++)
+          {
+                        
+                                temp->tab[i][j]=first->tab[i][j];
+								temp2->tab[i][j]=first->tab[i][j];           
+                  }
+                
+                }
 
 
-        if(first->tryb==1)
-        {
         for(i=0;i<first->rozmiary;i++)
       {
           for(j=0;j<first->rozmiarx;j++)
           {
-                        if(first->tab[i][j]!=0 && j>0 && i>0 && i<first->rozmiary-1 && j<first->rozmiarx-1)// zewnetrznych nie bede zmienial bo nie wiem jakby co jest poza , krawedz pola nie musi byc krawedzia kszataltu
+                        if( j>0 && i>0 && i<first->rozmiary-1 && j<first->rozmiarx-1)
                         {
-                                for(k=j-1;k<j+2;k++)
+					
+                               for(k=j;k<j+1;k++)//kontrast 3x3 w temp
                                 {
-                                        for(m=i-1;m<i+2;m++)
+                                        for(m=i;m<i+1;m++)
                                         {
-                                                if(first->tab[m][k]!=0) counter++;
+                                          if(first->tab[i][j]<=(first->odcien/2))
+                                           {                
+                                                  temp->tab[i][j]=0;                
+                                           }
+                                           else if(first->tab[i][j]>(first->odcien/2))
+                                           {
+                                                
+                                                  temp->tab[i][j]=first->odcien;
+                      
+                                           }
+                                                                                     
+                                        }
+                                
+								 }
+
+
+
+                               for(k=j;k<j+1;k++)//sprawdzanie czy krawedz w 3x3 , przypisanie zmian do temp2
+                                {
+                                        for(m=i;m<i+1;m++)
+                                        {
+                                             
+                                                                                         if(temp->tab[m-1][k]!=temp->tab[m+1][k]);
+                                                                                         else if (temp->tab[m][k-1]!=temp->tab[m][k+1]);
+                                                                                          else if (temp->rozmiarx<100 && temp->rozmiary<100 && temp->tab[m][k-1]==temp->tab[m][k+1] && temp->tab[m][k-1]!=temp->tab[m][k]);
+                                                                                            else if (temp->rozmiarx<100 && temp->rozmiary<100 && temp->tab[m-1][k]==temp->tab[m+1][k] && temp->tab[m-1][k]!=temp->tab[m][k]);
+																							else temp2->tab[i][j]=0;
                                         }
                                 
                                 }
+
+                                     for(k=j;k<j+1;k++)//powrot wartosci w temp
+									 {
+                                        for(m=i;m<i+1;m++)
+                                        {
+                                        temp->tab[i][j]=first->tab[i][j];
+                                           }
+                                                                                     
+                                      }
                                 
+								 }                                             
+                                                
                          }
                         
-                        if(counter==9) 
-                        {
-                                temp->tab[i][j]=1;        
-                        }
-                        //printf("%d ",counter);
-                        counter=0;
-                   }
-                        //printf("\n");
-        }
-//////////
-
-                        for(i=0;i<first->rozmiary;i++)
+                }
+ for(i=0;i<first->rozmiary;i++)
            {
            for(j=0;j<first->rozmiarx;j++)
            {
-                           if(temp->tab[i][j]==1) first->tab[i][j]=0;
-                         
+                 first->tab[i][j]=temp2->tab[i][j];
            }
-          
+           
          
           }
-  
+              
         
-                }
-        
+ //CZESC II
 
         
-        if(first->tryb==2)
-        {
-	
-		
-	    for(i=0;i<first->rozmiary;i++)
+              
+                
+            for(i=0;i<first->rozmiary;i++)
            {
            for(j=0;j<first->rozmiarx;j++)
            {
                        if(first->tab[i][j]<=(first->odcien/2))
-					   {
-						
-							
-						   first->tab[i][j]=first->tab[i][j]-first->odcien;
-						   if(first->tab[i][j]<0) first->tab[i][j]=0;		
-					   }
-					   else if(first->tab[i][j]>(first->odcien/2))
-					   {
-						
-						   first->tab[i][j]=first->tab[i][j]+first->odcien;
-						   if(first->tab[i][j]>first->odcien) first->tab[i][j]=first->odcien;
-							
-					   }
+                                           {
+                                                
+                                                        
+                                                   first->tab[i][j]=first->tab[i][j]-first->odcien;
+                                                   if(first->tab[i][j]<0) first->tab[i][j]=0;                
+                                           }
+                                           else if(first->tab[i][j]>(first->odcien/2))
+                                           {
+                                                
+                                                   first->tab[i][j]=first->tab[i][j]+first->odcien;
+                                                   if(first->tab[i][j]>first->odcien) first->tab[i][j]=first->odcien;
+                                                        
+                                           }
                            
            }
             
            }
-
-
-
-
-
-
-
 
 
         for(i=0;i<first->rozmiary;i++)
@@ -419,27 +456,25 @@ void wykryjkrawedz(element *first)
 
                                                
 
-							 for(k=j;k<j+1;k++)
+                                                         for(k=j;k<j+1;k++)
                                 {
                                         for(m=i;m<i+1;m++)
                                         {
                                              
-											 if(first->tab[m-1][k]!=first->tab[m+1][k]);
-											 else if (first->tab[m][k-1]!=first->tab[m][k+1]);
-											  else if (first->rozmiarx<100 && first->rozmiary<100 && first->tab[m][k-1]==first->tab[m][k+1] && first->tab[m][k-1]!=first->tab[m][k]);
-											    else if (first->rozmiarx<100 && first->rozmiary<100 && first->tab[m-1][k]==first->tab[m+1][k] && first->tab[m-1][k]!=first->tab[m][k]);
-											 else temp->tab[i][j]=0;
+                                                                                         if(first->tab[m-1][k]!=first->tab[m+1][k]);
+                                                                                         else if (first->tab[m][k-1]!=first->tab[m][k+1]);
+                                                                                          else if (first->rozmiarx<100 && first->rozmiary<100 && first->tab[m][k-1]==first->tab[m][k+1] && first->tab[m][k-1]!=first->tab[m][k]);
+                                                                                            else if (first->rozmiarx<100 && first->rozmiary<100 && first->tab[m-1][k]==first->tab[m+1][k] && first->tab[m-1][k]!=first->tab[m][k]);
+                                                                                         else temp->tab[i][j]=0;
                                         }
                                 
                                 }
-										
+                                                                                
                                                 
                          }
                         
                 }
         }
-
-    
 
         for(i=0;i<first->rozmiary;i++)
            {
@@ -451,16 +486,21 @@ void wykryjkrawedz(element *first)
          
           }
                 
-        }
-		
-		usunjeden(temp);
+      
+    
 
-         negatyw(first);
-          first->czyzapisano=0;	          
+		  negatyw(first);
+		  usunjeden(temp); 
+		 usunjeden(temp2);  
+		 first->czyzapisano=0;         
+	  }
+
+			 
+                
 
 }
  
-}
+
 
 void negatyw(element *first)
 {
@@ -533,8 +573,8 @@ for(i=0;i<temp->rozmiary;i++)
           }
        
         
-		podmianatablicy(first,temp);
-	usunjeden(temp);     
+                podmianatablicy(first,temp);
+        usunjeden(temp);     
         
 
 
@@ -572,23 +612,23 @@ void obrot180(element *first)
             // printf("\n");
      
           }
-		      
+                      
         first->czyzapisano=0;
       usunjeden(temp);
 }
 
 void podmianatablicy(element *first,element *temp)
 {
-	int i=0,j=0;
+        int i=0,j=0;
      for(i=0;i<first->rozmiary;i++)
-				free(first->tab[i]);
+                                free(first->tab[i]);
         free(first->tab);
 
-		first->rozmiarx=temp->rozmiarx;
-		first->rozmiary=temp->rozmiary;
-		inittab(first);
+                first->rozmiarx=temp->rozmiarx;
+                first->rozmiary=temp->rozmiary;
+                inittab(first);
 
-		for(i=0;i<temp->rozmiary;i++)
+                for(i=0;i<temp->rozmiary;i++)
            {
            for(j=0;j<temp->rozmiarx;j++)
            {
@@ -639,11 +679,11 @@ void inittab(element *temp)
 
 void usunjeden(element *temp)
 {
-	int i=0;
+        int i=0;
 for(i=0;i<temp->rozmiary;i++)
-				free(temp->tab[i]);
-		 free(temp->tab);
-		 free(temp);
+                                free(temp->tab[i]);
+                 free(temp->tab);
+                 free(temp);
 }
 void zapisz(element *first,plik obraz, int trybzapisu)
 {
@@ -679,7 +719,7 @@ int znak=0;
            }
              if(i!=first->rozmiary-1) fprintf(obraz,"\n");
           }
-				first->czyzapisano=1;
+                                first->czyzapisano=1;
                 fclose(obraz);
         }
         else if(znak=='2')
@@ -701,7 +741,7 @@ int znak=0;
            }
              if(i!=first->rozmiary-1) fprintf(obraz,"\n");
           }
-		 first->czyzapisano=1;
+                 first->czyzapisano=1;
                 fclose(obraz);
 
         }
@@ -728,7 +768,7 @@ int znak=0;
            }
              if(i!=first->rozmiary-1) fprintf(obraz,"\n");
           }
-			first->czyzapisano=1;
+                        first->czyzapisano=1;
                 fclose(obraz);
         }
         else if(trybzapisu==2)
@@ -750,7 +790,7 @@ int znak=0;
            }
              if(i!=first->rozmiary-1) fprintf(obraz,"\n");
           }
-				first->czyzapisano=1;
+                                first->czyzapisano=1;
                 fclose(obraz);
 
         }
@@ -792,7 +832,7 @@ int zakres(int wartosc, int max)
         {
                 printf("nie znana komenda\n");
                 zakres(wartosc,max);
-				return 0;
+                                return 0;
         }
 }
 
@@ -811,7 +851,7 @@ int maxlista(element *lista)
                 temp=temp->next;
                 
         }while(temp!=NULL);
-		 usun(temp);       
+                 usun(temp);       
                 return counter;
 }
 
@@ -819,12 +859,12 @@ void zapiskoncowy(element *lista,plik obraz)
 {
         int trybzapisu=0;//0-zapisuj pytajac pokolei , 1-zapisz wszystkie zmienione (nadpisujac), 2-zapisz wszystkie zmienione podajac nazwe nowego pliku
         int czyzapisaczmiany=0;
-		int counter=0;
+                int counter=0;
         element *temp=lista;
         
         if(lista!=NULL)
         {
-		do
+                do
         {
         
               if(temp->czyzapisano==1) counter++;
@@ -832,7 +872,7 @@ void zapiskoncowy(element *lista,plik obraz)
                 
         }while(temp!=NULL);
 
-		temp=lista;
+                temp=lista;
         if(counter<maxlista(lista))
         {
         int ile=maxlista(lista);
@@ -844,13 +884,13 @@ void zapiskoncowy(element *lista,plik obraz)
         trybzapisu=zakres(trybzapisu,2);
 
         while(temp!=NULL)
-		{
+                {
                 if(temp->czyzapisano==0)
-				{
-				 printf("%s\n",temp->nazwa);
-				zapisz(temp,obraz,trybzapisu);
+                                {
+                                 printf("%s\n",temp->nazwa);
+                                zapisz(temp,obraz,trybzapisu);
                   ile--;
-				}
+                                }
              temp=temp->next;
                 
         }
@@ -865,7 +905,7 @@ void zapiskoncowy(element *lista,plik obraz)
         
         }
         }
-	
+        
 }
 
 void cien(element *first)
@@ -874,135 +914,135 @@ void cien(element *first)
         {
                 printf("brak plikow do przetworzenia\n");
         }
-		else if(first->tryb==1)
-		{
-		printf("nie mozna zmienic cieniowania obrazu czarno-bialego\n");
-		}
+                else if(first->tryb==1)
+                {
+                printf("nie mozna zmienic cieniowania obrazu czarno-bialego\n");
+                }
         else if(first->tryb==2);
-		{
-	int j=0,i=0;
-	int kierunek=0;
-	int kontrast=0;//zeby nie tworzyc nowej zmiennej kontrast posluzy tez do zmiany jasnosci 
-	printf("\n0-zmniejsz kontrast\n1-zwieksz kontrast\n2-rozjasnij obraz\n3-przyciemnij obraz\n");
-	kierunek=zakres(kierunek,3);
-	printf("liczba odcieni szarosci:%d\n",first->odcien);
-	if(kierunek==0) printf("podaj o ile odcieni zmniejszyc kontrast\n");
-	if(kierunek==1) printf("podaj o ile odcieni zwiekszyc kontrast\n");
-	if(kierunek==2) printf("podaj o ile odcieni rozjasnic obraz\n");
-	if(kierunek==3) printf("podaj o ile odcieni przyciemnic obraz\n");
-	kontrast=zakres(kontrast,first->odcien);
-	
-	 if(kierunek==0 || kierunek==1)
-	 {
-	    for(i=0;i<first->rozmiary;i++)
+                {
+        int j=0,i=0;
+        int kierunek=0;
+        int kontrast=0;//zeby nie tworzyc nowej zmiennej kontrast posluzy tez do zmiany jasnosci 
+        printf("\n0-zmniejsz kontrast\n1-zwieksz kontrast\n2-rozjasnij obraz\n3-przyciemnij obraz\n");
+        kierunek=zakres(kierunek,3);
+        printf("liczba odcieni szarosci:%d\n",first->odcien);
+        if(kierunek==0) printf("podaj o ile odcieni zmniejszyc kontrast\n");
+        if(kierunek==1) printf("podaj o ile odcieni zwiekszyc kontrast\n");
+        if(kierunek==2) printf("podaj o ile odcieni rozjasnic obraz\n");
+        if(kierunek==3) printf("podaj o ile odcieni przyciemnic obraz\n");
+        kontrast=zakres(kontrast,first->odcien);
+        
+         if(kierunek==0 || kierunek==1)
+         {
+            for(i=0;i<first->rozmiary;i++)
            {
            for(j=0;j<first->rozmiarx;j++)
            {
                        if(first->tab[i][j]<=(first->odcien/2))
-					   {
-						   	if(kierunek==0)
-							{
-						   first->tab[i][j]=first->tab[i][j]+kontrast;
-						   if(first->tab[i][j]>first->odcien) first->tab[i][j]=first->odcien;
-							}
-							else if(kierunek==1)
-							{
-						    first->tab[i][j]=first->tab[i][j]-kontrast;
-						   if(first->tab[i][j]<0) first->tab[i][j]=0;
-							}
+                                           {
+                                                           if(kierunek==0)
+                                                        {
+                                                   first->tab[i][j]=first->tab[i][j]+kontrast;
+                                                   if(first->tab[i][j]>first->odcien) first->tab[i][j]=first->odcien;
+                                                        }
+                                                        else if(kierunek==1)
+                                                        {
+                                                    first->tab[i][j]=first->tab[i][j]-kontrast;
+                                                   if(first->tab[i][j]<0) first->tab[i][j]=0;
+                                                        }
 
 
-							
-					   }
-					   else if(first->tab[i][j]>(first->odcien/2))
-					   {
-						   	if(kierunek==0)
-							{
-						    first->tab[i][j]=first->tab[i][j]-kontrast;
-						   if(first->tab[i][j]<0) first->tab[i][j]=0;
-							}
-							else if(kierunek==1)
-							{
-						   first->tab[i][j]=first->tab[i][j]+kontrast;
-						   if(first->tab[i][j]>first->odcien) first->tab[i][j]=first->odcien;
-							}
-					   }
+                                                        
+                                           }
+                                           else if(first->tab[i][j]>(first->odcien/2))
+                                           {
+                                                           if(kierunek==0)
+                                                        {
+                                                    first->tab[i][j]=first->tab[i][j]-kontrast;
+                                                   if(first->tab[i][j]<0) first->tab[i][j]=0;
+                                                        }
+                                                        else if(kierunek==1)
+                                                        {
+                                                   first->tab[i][j]=first->tab[i][j]+kontrast;
+                                                   if(first->tab[i][j]>first->odcien) first->tab[i][j]=first->odcien;
+                                                        }
+                                           }
                            
            }
             
            }
-	 }
-	 if(kierunek==2 || kierunek==3)
-	 {
-	    for(i=0;i<first->rozmiary;i++)
+         }
+         if(kierunek==2 || kierunek==3)
+         {
+            for(i=0;i<first->rozmiary;i++)
            {
            for(j=0;j<first->rozmiarx;j++)
            {
                       
-						   	if(kierunek==2)
-							{
-						   first->tab[i][j]=first->tab[i][j]+kontrast;
-						   if(first->tab[i][j]>first->odcien) first->tab[i][j]=first->odcien;
-							}
-							else if(kierunek==3)
-							{
-						    first->tab[i][j]=first->tab[i][j]-kontrast;
-							if(first->tab[i][j]<0) first->tab[i][j]=0;
-							}
-					
-					  
-					
+                                                           if(kierunek==2)
+                                                        {
+                                                   first->tab[i][j]=first->tab[i][j]+kontrast;
+                                                   if(first->tab[i][j]>first->odcien) first->tab[i][j]=first->odcien;
+                                                        }
+                                                        else if(kierunek==3)
+                                                        {
+                                                    first->tab[i][j]=first->tab[i][j]-kontrast;
+                                                        if(first->tab[i][j]<0) first->tab[i][j]=0;
+                                                        }
+                                        
+                                          
+                                        
            }
             
            }
-	 }
-		}
+         }
+                }
 }
 
 void zmienrozmiar(element *first)
 {
-	  if(first==NULL)
+          if(first==NULL)
         {
                 printf("brak plikow do przetworzenia\n");
         }
-		else
-	{
-	int x=0,y=0;
-	int j=0,i=0;
-	int p=0,k=0;
-	double ratiox=0,ratioy=0;
-	element *temp;
-	temp=(element *)malloc(sizeof(element));
-	
-	printf("podaj wymiary nowego obrazu:\nrozmiar X =");
-	x=zakres(x,5000);
-	printf("rozmiar Y =");
-	y=zakres(y,5000);
+                else
+        {
+        int x=0,y=0;
+        int j=0,i=0;
+        int p=0,k=0;
+        double ratiox=0,ratioy=0;
+        element *temp;
+        temp=(element *)malloc(sizeof(element));
+        
+        printf("podaj wymiary nowego obrazu:\nrozmiar X =");
+        x=zakres(x,5000);
+        printf("rozmiar Y =");
+        y=zakres(y,5000);
 
-	temp->rozmiarx=x;
-	temp->rozmiary=y;
-	inittab(temp);
-	ratiox=(double)first->rozmiarx/x;
-	printf("ratiox:%lf\n",ratiox);
-	ratioy=(double)first->rozmiary/y;
-	printf("ratioy:%lf\n",ratioy);
+        temp->rozmiarx=x;
+        temp->rozmiary=y;
+        inittab(temp);
+        ratiox=(double)first->rozmiarx/x;
+        printf("ratiox:%lf\n",ratiox);
+        ratioy=(double)first->rozmiary/y;
+        printf("ratioy:%lf\n",ratioy);
 
-	for(i=0;i<temp->rozmiary;i++)
+        for(i=0;i<temp->rozmiary;i++)
            {
            for(j=0;j<temp->rozmiarx;j++)
            {
-			p=(int)(j*ratiox);
-			k=(int)(i*ratioy);
-			if(p>=first->rozmiarx) p=first->rozmiarx;
-			if(k>=first->rozmiary) k=first->rozmiary;
-			temp->tab[i][j]=first->tab[k][p];
+                        p=(int)(j*ratiox);
+                        k=(int)(i*ratioy);
+                        if(p>=first->rozmiarx) p=first->rozmiarx;
+                        if(k>=first->rozmiary) k=first->rozmiary;
+                        temp->tab[i][j]=first->tab[k][p];
 
                         
            }
             
           }
-		podmianatablicy(first,temp);
-	usunjeden(temp); 
-	  }
+                podmianatablicy(first,temp);
+        usunjeden(temp); 
+          }
 }
 #endif // HEADER2_H
