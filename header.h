@@ -44,50 +44,63 @@ void zapiskoncowy(element *first,plik obraz);
 int  zakres(int wartosc, int max);
 void cien(element *first);
 void zmienrozmiar(element *first);
+void rozmycie(element *first);
 
 void menuglowne(element *lista, plik obraz)
 {
         int koniec=0;
-        char znak;
+        int znak;
    
         komendymenuglownego();
        
         
         while(koniec!=1)
         {
-        znak=getchar();
-                
+        scanf("%d",&znak);       
         switch (znak)
         {
-                case '1':
+                case 1:
                         lista=dodaj(lista,obraz);
+						komendymenuglownego();
                         break;
-                case '2':
+                case 2:
                         wyswietlinfo(pozycja(lista,wybor(lista)));
+						komendymenuglownego();
                         break;
-                case '3':
+                case 31:
                         negatyw(pozycja(lista,wybor(lista)));
+						komendymenuglownego();
                         break;
-                case '4':
+                case 32:
                         wykryjkrawedz(pozycja(lista,wybor(lista)));
+						komendymenuglownego();
                         break;
-                case '5':
+				case 33:
+                        rozmycie(pozycja(lista,wybor(lista)));
+						komendymenuglownego();
+                                break;
+                case 41:
                         cien(pozycja(lista,wybor(lista)));
+						komendymenuglownego();
                         break;
-                case '6':
+                case 42:
                         zmienrozmiar(pozycja(lista,wybor(lista)));
+						komendymenuglownego();
                         break;
-                case '7':
+                case 43:
                         obrot(pozycja(lista,wybor(lista)));
+						komendymenuglownego();
                         break;
-                case '8':
+                case 5:
                         zapisz((pozycja(lista,wybor(lista))),obraz,0);
+						komendymenuglownego();
                         break;
-                case '9':
+				
+                case 6:
                         zapiskoncowy(lista, obraz);
                         lista=usun(lista);
                         koniec=1;
-                                break;
+                        break;
                  default:
                          komendymenuglownego();
         }
@@ -100,13 +113,14 @@ void komendymenuglownego()
         printf("\nMENU GLOWNE: \n");
          printf("1-wczytaj obraz\n");
          printf("2-wyswietl dane pliku\n");
-         printf("3-negatyw\n");
-         printf("4-krawedzie\n");
-         printf("5-zmiany cieniowania\n");
-         printf("6-zmien rozmiar\n");
-         printf("7-obroc\n");
-         printf("8-zapisz\n");
-         printf("9-zakoncz\n");
+         printf("31-negatyw\n");
+         printf("32-krawedzie\n");
+		  printf("33-rozmycie\n");
+         printf("41-zmiany cieniowania\n");
+         printf("42-zmien rozmiar\n");
+         printf("43-obroc\n");
+         printf("5-zapisz\n"); 
+         printf("6-zakoncz\n");
 }
 
 void komendyobrotu()
@@ -333,7 +347,7 @@ void wykryjkrawedz(element *first)
           {
                         
                                 temp->tab[i][j]=first->tab[i][j];
-                                                                temp2->tab[i][j]=first->tab[i][j];           
+                                temp2->tab[i][j]=first->tab[i][j];           
                   }
                 
                 }
@@ -812,7 +826,7 @@ int zakres(int wartosc, int max)
         }
         else
         {
-                printf("nie znana komenda\n");
+                printf("niepoprawna wartosc\n");
                 zakres(wartosc,max);
                                 return 0;
         }
@@ -892,16 +906,12 @@ void zapiskoncowy(element *lista,plik obraz)
 
 void cien(element *first)
 {
-        if(first==NULL)
+        if(first==NULL || first->tryb==1)
         {
-                printf("brak plikow do przetworzenia\n");
-        }
-                else if(first->tryb==1)
-                {
-                printf("nie mozna zmienic cieniowania obrazu czarno-bialego\n");
-                }
-        else if(first->tryb==2);
-                {
+                printf("brak plikow do przetworzenia lub obraz czarno-bialy\n");
+        }  
+        else 
+            {
         int j=0,i=0;
         int kierunek=0;
         int kontrast=0;//zeby nie tworzyc nowej zmiennej kontrast posluzy tez do zmiany jasnosci 
@@ -1027,6 +1037,77 @@ void zmienrozmiar(element *first)
         usunjeden(temp); 
           }
 }
+                         
+void rozmycie(element *first)
+{
+	int i=0,j=0,m=0,k=0;
+		int srednia=0;
+
+ if(first==NULL || first->tryb==1)
+        {
+                printf("brak plikow do przetworzenia lub obraz czarno-bialy\n");
+        }  
+        else 
+            {
+	 element *temp;
+       temp=(element *)malloc(sizeof(element)); 
+        temp->rozmiarx=first->rozmiarx;
+        temp->rozmiary=first->rozmiary;
+		inittab(temp);
+		negatyw(first);
+		 for(i=0;i<first->rozmiary;i++)
+      {
+          for(j=0;j<first->rozmiarx;j++)
+          {
+			  temp->tab[i][j]=first->tab[i][j];
+		  }
+	}
 
 
+	 for(i=0;i<first->rozmiary;i++)
+      {
+          for(j=0;j<first->rozmiarx;j++)
+          {
+			
+		  	 if( j>0 && i>0 && i<first->rozmiary-1 && j<first->rozmiarx-1)
+                        {
+		 for(k=j-1;k<j+2;k++)
+           {
+                 for(m=i-1;m<i+2;m++)
+                    {
+						
+
+
+                                                 if(m==i && k==j) srednia=srednia+4*(temp->tab[m][k]);
+												else if((m!=i && k==j) || (m==i && k!=j)) srednia=srednia+2*(temp->tab[m][k]);
+												else if(m!=i && k!=j) srednia=srednia+1*temp->tab[m][k];	
+
+						
+					 
+		 }
+		
+		}
+		srednia=srednia/(4+4*2+4*1);
+		
+
+		temp->tab[i][j]=srednia;
+			srednia=0;	
+			
+			 }
+			 
+	 }
+	 }
+
+	 for(i=0;i<first->rozmiary;i++)
+      {
+          for(j=0;j<first->rozmiarx;j++)
+          {
+			first->tab[i][j]=temp->tab[i][j];
+		  }
+
+	 }
+	 negatyw(first);
+	usunjeden(temp);
+}
+}
 #endif // HEADER2_H
