@@ -237,8 +237,7 @@ element * dodaj(element *first,plik obraz)
 			}
 			znak=fgetc(obraz);
 		}
-		fseek(obraz,-1,SEEK_CUR);
-
+		fseek(obraz,-3,SEEK_CUR);
 		if(temp->tryb==1)  
 		{
 			fscanf(obraz,"%d%d",&temp->rozmiarx,&temp->rozmiary);
@@ -260,7 +259,7 @@ element * dodaj(element *first,plik obraz)
 				for(j=0;j<temp->rozmiarx;j++)
 					fscanf(obraz,"%d",&temp->tab[i][j]);
 
-			// znak=fgetc(obraz);
+			
 		}
 
 		fclose(obraz);
