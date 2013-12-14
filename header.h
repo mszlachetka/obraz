@@ -973,6 +973,7 @@ void rozmycie(element *first)
 
 							if(odleglosc==0) srednia=srednia+8*(temp->tab[m][k]);
 							else if(odleglosc==1) srednia=srednia+4*(temp->tab[m][k]);
+							else if(odleglosc==2 &&(m==i || k==j)) srednia=srednia+2*temp->tab[m][k];
 							else if(odleglosc==2) srednia=srednia+2*temp->tab[m][k];
 							else if(odleglosc==3) srednia=srednia+1*temp->tab[m][k];
 							else if(odleglosc==4) srednia=srednia+1*temp->tab[m][k];
