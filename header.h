@@ -719,8 +719,7 @@ int zakres(int wartosc, int max)
 	else
 	{
 		printf("niepoprawna wartosc\n");
-		zakres(wartosc,max);
-		return 0;
+		return zakres(wartosc,max);
 	}
 }
 
@@ -730,7 +729,7 @@ int maxlista(element *lista)
 	int counter=0;
 	if(lista==NULL)
 	{
-		return -1;
+		return 0;
 	}
 	do
 	{
@@ -925,6 +924,7 @@ void zmienrozmiar(element *first)
 		}
 		podmianatablicy(first,temp);
 		usunjeden(temp); 
+		first->czyzapisano=0;
 	}
 }
 
@@ -932,6 +932,7 @@ void rozmycie(element *first)
 {
 	int i=0,j=0,m=0,k=0;
 	int srednia=0;
+	int odleglosc=0;
 
 	if(first==NULL || first->tryb==1)
 	{
@@ -944,7 +945,7 @@ void rozmycie(element *first)
 		temp->rozmiarx=first->rozmiarx;
 		temp->rozmiary=first->rozmiary;
 		inittab(temp);
-		negatyw(first);
+		//negatyw(first);
 		for(i=0;i<first->rozmiary;i++)
 		{
 			for(j=0;j<first->rozmiarx;j++)
@@ -959,20 +960,29 @@ void rozmycie(element *first)
 			for(j=0;j<first->rozmiarx;j++)
 			{
 
-				if( j>0 && i>0 && i<first->rozmiary-1 && j<first->rozmiarx-1)
+				if( j>1 && i>1 && i<first->rozmiary-2 && j<first->rozmiarx-2)
 				{
-					for(k=j-1;k<j+2;k++)
+					for(k=j-2;k<j+3;k++)
 					{
-						for(m=i-1;m<i+2;m++)
+						for(m=i-2;m<i+3;m++)
 						{
-							if(m==i && k==j) srednia=srednia+4*(temp->tab[m][k]);
-							else if((m!=i && k==j) || (m==i && k!=j)) srednia=srednia+2*(temp->tab[m][k]);
-							else if(m!=i && k!=j) srednia=srednia+1*temp->tab[m][k];	
+							if(m>i) odleglosc=odleglosc+m-i;
+							if(m<=i) odleglosc=odleglosc+i-m;
+							if(k>j) odleglosc=odleglosc+k-j;
+							if(k<=j) odleglosc=odleglosc+j-k;
+
+							if(odleglosc==0) srednia=srednia+8*(temp->tab[m][k]);
+							else if(odleglosc==1) srednia=srednia+4*(temp->tab[m][k]);
+							else if(odleglosc==2) srednia=srednia+2*temp->tab[m][k];
+							else if(odleglosc==3) srednia=srednia+1*temp->tab[m][k];
+							else if(odleglosc==4) srednia=srednia+1*temp->tab[m][k];
+
+							odleglosc=0;
 						}
 					}
-					srednia=srednia/(4+4*2+4*1);
+					srednia=srednia/(8+4*4+2*8+12*1);
 					temp->tab[i][j]=srednia;
-					srednia=0;	
+					srednia=0;
 				}
 			}
 		}
@@ -985,8 +995,9 @@ void rozmycie(element *first)
 			}
 
 		}
-		negatyw(first);
+		//negatyw(first);
 		usunjeden(temp);
+		first->czyzapisano=0;
 	}
 }
 #endif // HEADER2_H
