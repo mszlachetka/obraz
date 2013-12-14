@@ -263,13 +263,15 @@ element * dodaj(element *first,plik obraz)
 		}
 
 		fclose(obraz);
+		return push(first,temp);
 	}
 	else
 	{
 		printf("nie ma takiego pliku\n");
+		return dodaj(first,obraz);
 	}
 
-	return push(first,temp);
+	
 	usun(temp);       
 }
 
