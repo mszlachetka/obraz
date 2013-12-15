@@ -201,7 +201,7 @@ element * dodaj(element *first,plik obraz)
 	element *temp;
 	int i=0;
 	int j=0;
-
+	int licznik=0;
 	char znak;
 	temp=(element *)malloc(sizeof(element));
 	printf("podaj nazwe pliku:");
@@ -223,6 +223,11 @@ element * dodaj(element *first,plik obraz)
 			znak=fgetc(obraz);
 			if(znak=='1') temp->tryb=1;
 			else if (znak=='2') temp->tryb=2;
+		}
+		else 
+		{
+			printf("blad odczytu pliku\n");
+			return first;
 		}
 
 		znak=fgetc(obraz);
@@ -247,7 +252,18 @@ element * dodaj(element *first,plik obraz)
 
 			for(i=0;i<temp->rozmiary;i++)
 				for(j=0;j<temp->rozmiarx;j++)
-					fscanf(obraz,"%d",&temp->tab[i][j]);
+				{
+					if(fscanf(obraz,"%d",&temp->tab[i][j])) licznik++;
+					if(temp->tab[i][j]<0) temp->tab[i][j]=0; // male naprawianie niepoprawnych plikow
+					if(temp->tab[i][j]>1) temp->tab[i][j]=1;
+					
+				}
+				if(licznik==temp->rozmiarx*temp->rozmiary) return push(first,temp);
+				else 
+					{
+						printf("blad odczytu pliku\n");		
+						return first;
+					}
 		}
 		else if(temp->tryb==2)  
 		{
@@ -257,21 +273,32 @@ element * dodaj(element *first,plik obraz)
 
 			for(i=0;i<temp->rozmiary;i++)
 				for(j=0;j<temp->rozmiarx;j++)
-					fscanf(obraz,"%d",&temp->tab[i][j]);
+				{
+					if(fscanf(obraz,"%d",&temp->tab[i][j])) licznik++;
+					if(temp->tab[i][j]<0) temp->tab[i][j]=0; // male naprawianie niepoprawnych plikow
+					if(temp->tab[i][j]>temp->odcien) temp->tab[i][j]=temp->odcien;
+					
+				}
 
-			
+		if(licznik==temp->rozmiarx*temp->rozmiary) return push(first,temp);
+		else 
+			{
+				printf("blad odczytu pliku\n");
+				return first;
+			}
 		}
-
-		fclose(obraz);
-		return push(first,temp);
+		else 
+		{
+		printf("blad odczytu pliku\n");
+		return first;
+		}
+		
 	}
 	else
 	{
 		printf("nie ma takiego pliku\n");
 		return dodaj(first,obraz);
 	}
-
-	
 	usun(temp);       
 }
 
@@ -283,7 +310,10 @@ void wyswietlinfo(element *first)
 	}
 	else
 	{
-		printf("\n%s\nP%d\nrozmiary: %d\nrozmiarx: %d\nodcien: %d\nczy zapisano:",first->nazwa,first->tryb,first->rozmiary,first->rozmiarx,first->odcien);
+		printf("\n%s\nP%d\nrozmiary: %d\nrozmiarx:%d\n",first->nazwa,first->tryb,first->rozmiary,first->rozmiarx);
+		
+		if(first->tryb==1) printf("czarno-bialy\nczy zapisano:");
+		if(first->tryb==2) printf("liczba odcieni szarosci:%d\nczy zapisano:",first->odcien);
 		if(first->czyzapisano==1) printf("tak\n");
 		if(first->czyzapisano==0) printf("nie\n");
 	}           
