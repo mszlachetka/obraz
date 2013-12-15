@@ -702,13 +702,13 @@ int wybor(element *lista)
 			else
 			{
 				printf("wartosc spoza zakresu\n");
-				wybor(lista);
-				return 0;
+				return wybor(lista);
+				
 			}
 		}
 		else return 0;
 	}
-	return 0;
+	else return 0;
 }
 
 int zakres(int wartosc, int max)
