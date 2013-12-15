@@ -333,6 +333,7 @@ void wykryjkrawedz(element *first)
 	{
 		element *temp;
 		element *temp2;
+		int stala=0;
 		temp=(element *)malloc(sizeof(element));
 		temp2=(element *)malloc(sizeof(element));
 		temp->rozmiarx=first->rozmiarx;
@@ -342,6 +343,7 @@ void wykryjkrawedz(element *first)
 		inittab(temp);
 		inittab(temp2);
 		negatyw(first);
+		
 
 		/*filtr sklada sie z dwoch czesci . 
 		1 to filtr cieniowany , wychodza grube krawedzie , ale uzwgledni roznice w odcieniach (krawedzie roznych barw) , 
@@ -353,9 +355,10 @@ void wykryjkrawedz(element *first)
 			for(j=0;j<first->rozmiarx;j++)
 			{
 				temp->tab[i][j]=first->tab[i][j];
-				temp2->tab[i][j]=first->tab[i][j];           
+				temp2->tab[i][j]=first->tab[i][j];
+				stala=stala+first->tab[i][j];
 			}
-
+		stala=stala/(first->rozmiarx*first->rozmiary); // dobierane dla dobrych efektow
 
 
 
@@ -400,12 +403,12 @@ void wykryjkrawedz(element *first)
 			{
 				for(j=0;j<first->rozmiarx;j++)
 				{
-					if(first->tab[i][j]<=(first->odcien/2))
+					if(first->tab[i][j]<=stala)
 					{
 						first->tab[i][j]=first->tab[i][j]-first->odcien;
 						if(first->tab[i][j]<0) first->tab[i][j]=0;                
 					}
-					else if(first->tab[i][j]>(first->odcien/2))
+					else if(first->tab[i][j]>stala)
 					{
 						first->tab[i][j]=first->tab[i][j]+first->odcien;
 						if(first->tab[i][j]>first->odcien) first->tab[i][j]=first->odcien;
